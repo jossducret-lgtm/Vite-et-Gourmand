@@ -35,7 +35,7 @@ class Menu
     private ?string $pricePerPerson = null;
 
     #[ORM\Column]
-    private ?int $sctockQuantity = null;
+    private ?int $stockQuantity = null;
 
     #[ORM\Column]
     private ?bool $isActive = null;
@@ -158,14 +158,14 @@ class Menu
         return $this;
     }
 
-    public function getSctockQuantity(): ?int
+    public function getStockQuantity(): ?int
     {
-        return $this->sctockQuantity;
+        return $this->stockQuantity;
     }
 
-    public function setSctockQuantity(int $sctockQuantity): static
+    public function setStockQuantity(int $stockQuantity): static
     {
-        $this->sctockQuantity = $sctockQuantity;
+        $this->stockQuantity = $stockQuantity;
 
         return $this;
     }

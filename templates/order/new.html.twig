@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+{% block title %}Commander {{ menu.title }}{% endblock %}
+{% block body %}
+<div class="row justify-content-center"><div class="col-lg-9"><div class="card shadow-sm"><div class="card-body p-4">
+    <h1 class="h3">Commander : {{ menu.title }}</h1>
+    <div class="alert alert-warning"><strong>Conditions importantes :</strong><br>{{ menu.conditionsText ?: 'Aucune condition particulière.' }}</div>
+    <div class="card bg-light border-0 mb-4"><div class="card-body"><h2 class="h5">Vos coordonnées</h2><p class="mb-1"><strong>Nom :</strong> {{ app.user.firstName }} {{ app.user.lastName }}</p><p class="mb-1"><strong>Email :</strong> {{ app.user.email }}</p><p class="mb-0"><strong>GSM :</strong> {{ app.user.phone }}</p></div></div>
+    <div class="row g-3 mb-4"><div class="col-md-4"><div class="border rounded p-3 bg-light"><strong>Minimum</strong><br>{{ menu.minPeople }} personnes</div></div><div class="col-md-4"><div class="border rounded p-3 bg-light"><strong>Prix</strong><br>{{ menu.pricePerPerson|number_format(2, ',', ' ') }} € / personne</div></div><div class="col-md-4"><div class="border rounded p-3 bg-light"><strong>Réduction</strong><br>-10% dès {{ menu.minPeople + 5 }} personnes</div></div></div>
+    {{ form_start(form) }}
+    <div class="row g-3"><div class="col-md-6">{{ form_row(form.serviceDate) }}</div><div class="col-md-6">{{ form_row(form.deliveryTime) }}</div><div class="col-md-8">{{ form_row(form.deliveryAddress) }}</div><div class="col-md-4">{{ form_row(form.deliveryCity) }}</div><div class="col-md-8">{{ form_row(form.deliveryPlace) }}</div><div class="col-md-4">{{ form_row(form.distanceKm) }}</div><div class="col-md-4">{{ form_row(form.peopleCount) }}</div></div>
+    <div id="orderCalculator" data-min-people="{{ menu.minPeople }}" data-price-per-person="{{ menu.pricePerPerson }}" class="card bg-light border-0 mt-4"><div class="card-body">
+        <h2 class="h5">Récapitulatif du prix</h2>
+        <p class="mb-1">Prix menu : <strong><span id="menuPricePreview">{{ priceDetails.menuPrice|number_format(2, ',', ' ') }}</span> €</strong></p>
+        <p class="mb-1">Réduction : <strong>-<span id="discountPreview">{{ priceDetails.discountAmount|number_format(2, ',', ' ') }}</span> €</strong></p>
+        <p class="mb-1">Livraison : <strong><span id="deliveryPreview">{{ priceDetails.deliveryPrice|number_format(2, ',', ' ') }}</span> €</strong></p>
+        <p class="fs-5 mb-0">Total : <strong><span id="totalPreview">{{ priceDetails.totalPrice|number_format(2, ',', ' ') }}</span> €</strong></p>
+        <p id="peopleWarning" class="text-danger small mt-2 d-none">Le nombre de personnes doit respecter le minimum du menu.</p>
+    </div></div>
+    <button class="btn btn-warning btn-lg w-100 mt-4">Valider la commande</button>
+    {{ form_end(form) }}
+</div></div></div></div>
+{% endblock %}
+{% block javascripts %}
+<script>
+const calculator = document.querySelector('#orderCalculator');
+if (calculator) {
+    const minPeople = Number(calculator.dataset.minPeople);
+    const pricePerPerson = Number(calculator.dataset.pricePerPerson);
+    const peopleInput = document.querySelector('[name$="[peopleCount]"]');
+    const cityInput = document.querySelector('[name$="[deliveryCity]"]');
+    const distanceInput = document.querySelector('[name$="[distanceKm]"]');
+    const menuPricePreview = document.querySelector('#menuPricePreview');
+    const discountPreview = document.querySelector('#discountPreview');
+    const deliveryPreview = document.querySelector('#deliveryPreview');
+    const totalPreview = document.querySelector('#totalPreview');
+    const peopleWarning = document.querySelector('#peopleWarning');
+    function formatPrice(value) { return value.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+    function updatePrice() {
+        const peopleCount = Number(peopleInput.value || minPeople);
+        const city = (cityInput.value || '').trim().toLowerCase();
+        const distanceKm = Number(distanceInput.value || 0);
+        const validPeopleCount = Math.max(peopleCount, minPeople);
+        let menuPrice = validPeopleCount * pricePerPerson;
+        let discount = validPeopleCount >= minPeople + 5 ? menuPrice * 0.10 : 0;
+        let delivery = city !== '' && city !== 'bordeaux' ? 5 + (distanceKm * 0.59) : 0;
+        const total = menuPrice - discount + delivery;
+        menuPricePreview.textContent = formatPrice(menuPrice);
+        discountPreview.textContent = formatPrice(discount);
+        deliveryPreview.textContent = formatPrice(delivery);
+        totalPreview.textContent = formatPrice(total);
+        peopleWarning.classList.toggle('d-none', peopleCount >= minPeople);
+    }
+    peopleInput.addEventListener('input', updatePrice);
+    cityInput.addEventListener('input', updatePrice);
+    if (distanceInput) distanceInput.addEventListener('input', updatePrice);
+    updatePrice();
+}
+</script>
+{% endblock %}

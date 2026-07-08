@@ -84,6 +84,12 @@ class MenuOrder
     #[ORM\OneToOne(mappedBy: 'menuOrder', cascade: ['persist', 'remove'])]
     private ?Review $review = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $distanceKm = null;
+
+    #[ORM\Column]
+    private ?bool $materialLoan = null;
+
     public function __construct()
     {
         $this->statusHistories = new ArrayCollection();
@@ -365,6 +371,30 @@ class MenuOrder
         }
 
         $this->review = $review;
+
+        return $this;
+    }
+
+    public function getDistanceKm(): ?float
+    {
+        return $this->distanceKm;
+    }
+
+    public function setDistanceKm(?float $distanceKm): static
+    {
+        $this->distanceKm = $distanceKm;
+
+        return $this;
+    }
+
+    public function isMaterialLoan(): ?bool
+    {
+        return $this->materialLoan;
+    }
+
+    public function setMaterialLoan(bool $materialLoan): static
+    {
+        $this->materialLoan = $materialLoan;
 
         return $this;
     }
