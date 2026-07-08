@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+{% block title %}Accueil - Vite & Gourmand{% endblock %}
+{% block body %}
+<section class="bg-white rounded-4 shadow-sm p-4 p-lg-5 mb-4">
+    <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+            <span class="badge bg-warning text-dark mb-3">Traiteur à Bordeaux depuis 25 ans</span>
+            <h1 class="display-5 fw-bold">Des menus gourmands pour vos événements</h1>
+            <p class="lead">Vite & Gourmand accompagne les particuliers et professionnels avec des menus de saison pour Noël, Pâques, les repas familiaux et les événements.</p>
+            <p>Consultez les menus disponibles, visualisez les conditions et commandez directement en ligne.</p>
+            <a href="{{ path('app_menu_index') }}" class="btn btn-warning btn-lg">Découvrir les menus</a>
+        </div>
+        <div class="col-lg-5">
+            <div class="card border-0 bg-light"><div class="card-body p-4">
+                <h2 class="h4">Julie & José</h2>
+                <p class="mb-0">Une équipe professionnelle, disponible et reconnue pour la qualité de ses prestations.</p>
+            </div></div>
+        </div>
+    </div>
+</section>
+<section>
+    <h2 class="h3 fw-bold mb-3">Avis clients validés</h2>
+    {% if reviews is empty %}
+        <div class="alert alert-info">Aucun avis validé pour le moment.</div>
+    {% else %}
+        <div class="row g-3">
+            {% for review in reviews %}
+                <div class="col-md-4"><article class="card h-100 shadow-sm"><div class="card-body">
+                    <div class="mb-2">{% for i in 1..review.rating %}⭐{% endfor %}</div>
+                    <p>{{ review.comment }}</p>
+                    <p class="small text-muted mb-0">{{ review.user.firstName }} {{ review.user.lastName }}</p>
+                </div></article></div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

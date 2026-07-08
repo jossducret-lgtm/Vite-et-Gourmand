@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ menu.title }} - Vite & Gourmand{% endblock %}
+{% block body %}
+<div class="row g-4">
+    <div class="col-lg-8"><article class="card shadow-sm"><div class="card-body p-4">
+        <div class="mb-3"><span class="badge bg-dark">{{ menu.theme.label }}</span> <span class="badge bg-success">{{ menu.diet.label }}</span></div>
+        <h1 class="fw-bold">{{ menu.title }}</h1>
+        <p class="lead">{{ menu.description }}</p>
+        <div class="alert alert-warning border-warning"><h2 class="h5">Conditions importantes du menu</h2><p class="mb-0">{{ menu.conditionsText ?: 'Aucune condition particulière.' }}</p></div>
+        {% if menu.images|length > 0 %}
+            <h2 class="h4 mt-4">Galerie</h2><div class="row g-3 mb-4">
+            {% for image in menu.images %}<div class="col-md-4"><img src="{{ asset('uploads/menus/' ~ image.filename) }}" class="img-fluid rounded shadow-sm" alt="{{ image.altText ?: menu.title }}"></div>{% endfor %}
+            </div>
+        {% endif %}
+        <h2 class="h4 mt-4">Plats du menu</h2>
+        <div class="row g-3">
+            {% for dish in menu.dishes %}
+                <div class="col-md-6"><div class="border rounded-3 p-3 bg-light h-100">
+                    <h3 class="h6 mb-1">{{ dish.title }}</h3><span class="badge bg-secondary">{{ dish.type }}</span><p class="small mt-2">{{ dish.description }}</p>
+                    {% if dish.allergens|length > 0 %}<p class="small mb-0"><strong>Allergènes :</strong> {% for allergen in dish.allergens %}{{ allergen.label }}{% if not loop.last %}, {% endif %}{% endfor %}</p>{% else %}<p class="small text-muted mb-0">Aucun allergène renseigné.</p>{% endif %}
+                </div></div>
+            {% else %}<div class="col-12"><div class="alert alert-info">Aucun plat renseigné pour ce menu.</div></div>{% endfor %}
+        </div>
+    </div></article></div>
+    <aside class="col-lg-4"><div class="card shadow-sm sticky-top" style="top: 1rem;"><div class="card-body">
+        <h2 class="h4">Commander</h2>
+        <ul class="list-group mb-3">
+            <li class="list-group-item d-flex justify-content-between"><span>Minimum</span><strong>{{ menu.minPeople }} personnes</strong></li>
+            <li class="list-group-item d-flex justify-content-between"><span>Prix</span><strong>{{ menu.pricePerPerson|number_format(2, ',', ' ') }} € / personne</strong></li>
+            <li class="list-group-item d-flex justify-content-between"><span>Stock</span><strong>{{ menu.stockQuantity }}</strong></li>
+        </ul>
+        {% if menu.stockQuantity <= 0 %}<div class="alert alert-danger">Ce menu n’est plus disponible.</div>{% elseif app.user %}<a href="{{ path('app_order_new', { slug: menu.slug }) }}" class="btn btn-warning w-100">Commander ce menu</a>{% else %}<div class="alert alert-info">Connectez-vous ou créez un compte pour commander.</div><a href="{{ path('app_login') }}" class="btn btn-warning w-100 mb-2">Connexion</a><a href="{{ path('app_register') }}" class="btn btn-outline-dark w-100">Créer un compte</a>{% endif %}
+    </div></div></aside>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+{% block title %}Tous les menus - Vite & Gourmand{% endblock %}
+{% block body %}
+<header class="mb-4"><h1 class="fw-bold">Tous les menus</h1><p class="text-muted mb-0">Recherchez rapidement un menu selon votre budget, le thème, le régime ou le nombre de personnes.</p></header>
+<section class="card shadow-sm mb-4"><div class="card-body">
+    <h2 class="h5 mb-3">Filtres de recherche</h2>
+    <form id="menuFilters" class="row g-3">
+        <div class="col-md-2"><label for="minPrice" class="form-label">Prix min</label><input id="minPrice" name="minPrice" type="number" min="0" class="form-control"></div>
+        <div class="col-md-2"><label for="maxPrice" class="form-label">Prix max</label><input id="maxPrice" name="maxPrice" type="number" min="0" class="form-control"></div>
+        <div class="col-md-2"><label for="minPeople" class="form-label">Personnes min</label><input id="minPeople" name="minPeople" type="number" min="1" class="form-control"></div>
+        <div class="col-md-3"><label for="theme" class="form-label">Thème</label><select id="theme" name="theme" class="form-select"><option value="">Tous les thèmes</option>{% for theme in themes %}<option value="{{ theme.id }}">{{ theme.label }}</option>{% endfor %}</select></div>
+        <div class="col-md-3"><label for="diet" class="form-label">Régime</label><select id="diet" name="diet" class="form-select"><option value="">Tous les régimes</option>{% for diet in diets %}<option value="{{ diet.id }}">{{ diet.label }}</option>{% endfor %}</select></div>
+    </form>
+</div></section>
+<div id="loadingMessage" class="alert alert-info d-none">Recherche en cours...</div>
+<section id="menuResults" aria-live="polite">{% include 'menu/_cards.html.twig' with { menus: menus } %}</section>
+{% endblock %}
+{% block javascripts %}
+<script>
+const filterForm = document.querySelector('#menuFilters');
+const resultsContainer = document.querySelector('#menuResults');
+const loadingMessage = document.querySelector('#loadingMessage');
+let timeout = null;
+function refreshMenus() {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+        const params = new URLSearchParams(new FormData(filterForm));
+        loadingMessage.classList.remove('d-none');
+        fetch('{{ path('app_menu_filter') }}?' + params.toString(), {method: 'GET', headers: {'X-Requested-With': 'XMLHttpRequest'}})
+            .then(response => { if (!response.ok) { throw new Error('Erreur'); } return response.text(); })
+            .then(html => { resultsContainer.innerHTML = html; })
+            .catch(() => { resultsContainer.innerHTML = '<div class="alert alert-danger">Impossible de charger les menus. Veuillez réessayer.</div>'; })
+            .finally(() => loadingMessage.classList.add('d-none'));
+    }, 300);
+}
+filterForm.addEventListener('input', refreshMenus);
+filterForm.addEventListener('change', refreshMenus);
+</script>
+{% endblock %}

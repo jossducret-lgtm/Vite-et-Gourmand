@@ -1,0 +1,27 @@
+{% if menus is empty %}
+    <div class="alert alert-warning">Aucun menu ne correspond à votre recherche.</div>
+{% else %}
+    <div class="row g-4">
+        {% for menu in menus %}
+            {% set firstImage = menu.images|first %}
+            <div class="col-md-6 col-lg-4"><article class="card h-100 shadow-sm">
+                {% if firstImage %}
+                    <img src="{{ asset('uploads/menus/' ~ firstImage.filename) }}" class="card-img-top" alt="{{ firstImage.altText ?: menu.title }}">
+                {% else %}
+                    <div class="bg-secondary-subtle d-flex align-items-center justify-content-center" style="height: 180px;"><span class="text-muted">Image du menu</span></div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-2"><span class="badge bg-dark">{{ menu.theme.label }}</span> <span class="badge bg-success">{{ menu.diet.label }}</span></div>
+                    <h2 class="h5">{{ menu.title }}</h2>
+                    <p class="text-muted">{{ menu.description|length > 130 ? menu.description|slice(0, 130) ~ '…' : menu.description }}</p>
+                    <ul class="list-unstyled small">
+                        <li><strong>Minimum :</strong> {{ menu.minPeople }} personnes</li>
+                        <li><strong>Prix :</strong> {{ menu.pricePerPerson|number_format(2, ',', ' ') }} € / personne</li>
+                        <li><strong>Stock disponible :</strong> {{ menu.stockQuantity }}</li>
+                    </ul>
+                    <a href="{{ path('app_menu_show', { slug: menu.slug }) }}" class="btn btn-warning mt-auto">Voir le détail</a>
+                </div>
+            </article></div>
+        {% endfor %}
+    </div>
+{% endif %}
