@@ -35,9 +35,14 @@ security:
             # switch_user: true
 
     # Note: Only the *first* matching rule is applied
+    role_hierarchy:
+        ROLE_EMPLOYEE: ROLE_USER
+        ROLE_ADMIN: ROLE_EMPLOYEE
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/employe, roles: ROLE_EMPLOYEE }
+        - { path: ^/mon-compte, roles: ROLE_USER }
+        - { path: ^/menus/.+/commander, roles: ROLE_USER }
 
 when@test:
     security:
