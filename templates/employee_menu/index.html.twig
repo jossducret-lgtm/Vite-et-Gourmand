@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Menu index{% endblock %}
+
+{% block body %}
+    <h1>Menu index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Slug</th>
+                <th>Description</th>
+                <th>ConditionsText</th>
+                <th>MinPeople</th>
+                <th>PricePerPerson</th>
+                <th>StockQuantity</th>
+                <th>IsActive</th>
+                <th>CreatedAt</th>
+                <th>UpdatedAt</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for menu in menus %}
+            <tr>
+                <td>{{ menu.id }}</td>
+                <td>{{ menu.title }}</td>
+                <td>{{ menu.slug }}</td>
+                <td>{{ menu.description }}</td>
+                <td>{{ menu.conditionsText }}</td>
+                <td>{{ menu.minPeople }}</td>
+                <td>{{ menu.pricePerPerson }}</td>
+                <td>{{ menu.stockQuantity }}</td>
+                <td>{{ menu.isActive ? 'Yes' : 'No' }}</td>
+                <td>{{ menu.createdAt ? menu.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ menu.updatedAt ? menu.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_employee_menu_show', {'id': menu.id}) }}">show</a>
+                    <a href="{{ path('app_employee_menu_edit', {'id': menu.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="12">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_employee_menu_new') }}">Create new</a>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+{% block title %}Espace employé{% endblock %}
+{% block body %}
+<h1 class="fw-bold mb-4">Espace employé</h1>
+<div class="row g-4">
+    <div class="col-md-4"><a class="text-decoration-none" href="{{ path('app_employee_orders') }}"><div class="card shadow-sm h-100"><div class="card-body"><h2 class="h5">Commandes en attente</h2><p class="display-6">{{ pendingOrdersCount }}</p></div></div></a></div>
+    <div class="col-md-4"><a class="text-decoration-none" href="{{ path('app_employee_reviews') }}"><div class="card shadow-sm h-100"><div class="card-body"><h2 class="h5">Avis à modérer</h2><p class="display-6">{{ pendingReviewsCount }}</p></div></div></a></div>
+    <div class="col-md-4"><div class="card shadow-sm h-100"><div class="card-body"><h2 class="h5">Gestion</h2><p class="text-muted mb-0">Utilisez les CRUD générés pour menus, plats et horaires.</p></div></div></div>
+</div>
+{% endblock %}

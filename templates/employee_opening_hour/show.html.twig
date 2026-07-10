@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}OpeningHour{% endblock %}
+
+{% block body %}
+    <h1>OpeningHour</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ opening_hour.id }}</td>
+            </tr>
+            <tr>
+                <th>DayOfWeek</th>
+                <td>{{ opening_hour.dayOfWeek }}</td>
+            </tr>
+            <tr>
+                <th>OpeningTime</th>
+                <td>{{ opening_hour.openingTime ? opening_hour.openingTime|date('H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>ClosingTime</th>
+                <td>{{ opening_hour.closingTime ? opening_hour.closingTime|date('H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>IsClosed</th>
+                <td>{{ opening_hour.isClosed ? 'Yes' : 'No' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_employee_opening_hour_index') }}">back to list</a>
+
+    <a href="{{ path('app_employee_opening_hour_edit', {'id': opening_hour.id}) }}">edit</a>
+
+    {{ include('employee_opening_hour/_delete_form.html.twig') }}
+{% endblock %}

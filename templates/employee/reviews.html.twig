@@ -1,0 +1,6 @@
+{% extends 'base.html.twig' %}
+{% block title %}Avis clients{% endblock %}
+{% block body %}
+<h1 class="fw-bold mb-4">Avis à modérer</h1>
+<div class="row g-3">{% for review in reviews %}<div class="col-md-6"><div class="card shadow-sm"><div class="card-body"><div class="mb-2">{% for i in 1..review.rating %}⭐{% endfor %}</div><p>{{ review.comment }}</p><small class="text-muted">{{ review.user.firstName }} {{ review.user.lastName }}</small><form method="post" action="{{ path('app_employee_review_moderate', { id: review.id }) }}" class="d-flex gap-2 mt-3"><input type="hidden" name="_token" value="{{ csrf_token('moderate_review_' ~ review.id) }}"><button name="action" value="validate" class="btn btn-success btn-sm">Valider</button><button name="action" value="refuse" class="btn btn-danger btn-sm">Refuser</button></form></div></div></div>{% else %}<div class="alert alert-info">Aucun avis en attente.</div>{% endfor %}</div>
+{% endblock %}

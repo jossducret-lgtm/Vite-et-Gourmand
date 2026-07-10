@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Menu{% endblock %}
+
+{% block body %}
+    <h1>Menu</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ menu.id }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ menu.title }}</td>
+            </tr>
+            <tr>
+                <th>Slug</th>
+                <td>{{ menu.slug }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ menu.description }}</td>
+            </tr>
+            <tr>
+                <th>ConditionsText</th>
+                <td>{{ menu.conditionsText }}</td>
+            </tr>
+            <tr>
+                <th>MinPeople</th>
+                <td>{{ menu.minPeople }}</td>
+            </tr>
+            <tr>
+                <th>PricePerPerson</th>
+                <td>{{ menu.pricePerPerson }}</td>
+            </tr>
+            <tr>
+                <th>StockQuantity</th>
+                <td>{{ menu.stockQuantity }}</td>
+            </tr>
+            <tr>
+                <th>IsActive</th>
+                <td>{{ menu.isActive ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>CreatedAt</th>
+                <td>{{ menu.createdAt ? menu.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>UpdatedAt</th>
+                <td>{{ menu.updatedAt ? menu.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_employee_menu_index') }}">back to list</a>
+
+    <a href="{{ path('app_employee_menu_edit', {'id': menu.id}) }}">edit</a>
+
+    {{ include('employee_menu/_delete_form.html.twig') }}
+{% endblock %}
