@@ -1,0 +1,5 @@
+{% extends 'base.html.twig' %}
+{% block title %}Donner un avis{% endblock %}
+{% block body %}
+<div class="row justify-content-center"><div class="col-lg-7"><div class="card shadow-sm"><div class="card-body p-4"><h1 class="h3">Donner un avis</h1><p class="text-muted">Commande {{ order.orderNumber }} - {{ order.menu.title }}</p>{{ form_start(form) }}{{ form_widget(form) }}<button class="btn btn-warning w-100">Envoyer mon avis</button>{{ form_end(form) }}</div></div></div></div>
+{% endblock %}
