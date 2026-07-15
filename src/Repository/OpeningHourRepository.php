@@ -16,28 +16,30 @@ class OpeningHourRepository extends ServiceEntityRepository
         parent::__construct($registry, OpeningHour::class);
     }
 
-//    /**
-//     * @return OpeningHour[] Returns an array of OpeningHour objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('o')
-//            ->andWhere('o.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('o.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    private const DAY_ORDER = [
+        'LUNDI' => 1,
+        'MARDI' => 2,
+        'MERCREDI' => 3,
+        'JEUDI' => 4,
+        'VENDREDI' => 5,
+        'SAMEDI' => 6,
+        'DIMANCHE' => 7,
+    ];
 
-//    public function findOneBySomeField($value): ?OpeningHour
-//    {
-//        return $this->createQueryBuilder('o')
-//            ->andWhere('o.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * @return OpeningHour[]
+     */
+    public function findOrderedByDay(): array
+    {
+        $hours = $this->findAll();
+
+        usort($hours, static function (OpeningHour $a, OpeningHour $b): int {
+            $orderA = self::DAY_ORDER[$a->getDayOfWeek() ?? ''] ?? 99;
+            $orderB = self::DAY_ORDER[$b->getDayOfWeek() ?? ''] ?? 99;
+
+            return $orderA <=> $orderB;
+        });
+
+        return $hours;
+    }
 }

@@ -1,35 +1,104 @@
 {% extends 'base.html.twig' %}
 {% block title %}{{ menu.title }} - Vite & Gourmand{% endblock %}
 {% block body %}
+<nav aria-label="Fil d'Ariane" class="mb-3">
+    <ol class="breadcrumb small mb-0">
+        <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('app_menu_index') }}">Menus</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ menu.title }}</li>
+    </ol>
+</nav>
+
 <div class="row g-4">
-    <div class="col-lg-8"><article class="card shadow-sm"><div class="card-body p-4">
-        <div class="mb-3"><span class="badge bg-dark">{{ menu.theme.label }}</span> <span class="badge bg-success">{{ menu.diet.label }}</span></div>
-        <h1 class="fw-bold">{{ menu.title }}</h1>
-        <p class="lead">{{ menu.description }}</p>
-        <div class="alert alert-warning border-warning"><h2 class="h5">Conditions importantes du menu</h2><p class="mb-0">{{ menu.conditionsText ?: 'Aucune condition particulière.' }}</p></div>
-        {% if menu.images|length > 0 %}
-            <h2 class="h4 mt-4">Galerie</h2><div class="row g-3 mb-4">
-            {% for image in menu.images %}<div class="col-md-4"><img src="{{ asset('uploads/menus/' ~ image.filename) }}" class="img-fluid rounded shadow-sm" alt="{{ image.altText ?: menu.title }}"></div>{% endfor %}
+    <div class="col-lg-8">
+        <article class="card card-vite">
+            <div class="card-body p-4">
+                <div class="mb-3">
+                    <span class="badge badge-theme">{{ menu.theme.label }}</span>
+                    <span class="badge badge-diet">{{ menu.diet.label }}</span>
+                </div>
+                <h1 class="page-title">{{ menu.title }}</h1>
+                <p class="lead">{{ menu.description }}</p>
+
+                <div class="alert alert-conditions" role="note">
+                    <h2 class="h6 mb-1">Conditions</h2>
+                    <p class="mb-0 small">{{ menu.conditionsText ?: 'Rien de particulier.' }}</p>
+                </div>
+
+                {% if menu.images|length > 0 %}
+                    <h2 class="h5 mt-4">Galerie</h2>
+                    <div class="row g-2 mb-4">
+                        {% for image in menu.images %}
+                            <div class="col-6 col-md-4">
+                                <img src="{{ asset('uploads/' ~ image.filename) }}" class="img-fluid rounded" alt="{{ image.altText ?: menu.title }}">
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <h2 class="h5">Plats inclus</h2>
+                {% set types = {'ENTREE':'Entrées','PLAT':'Plats','DESSERT':'Desserts'} %}
+                {% for typeKey, typeLabel in types %}
+                    {% set typeDishes = menu.dish|filter(d => d.type == typeKey) %}
+                    {% if typeDishes|length > 0 %}
+                        <h3 class="h6 text-muted text-uppercase mt-4 mb-2">{{ typeLabel }}</h3>
+                        <div class="row g-3 mb-2">
+                            {% for dish in typeDishes %}
+                                <div class="col-md-6">
+                                    <div class="dish-card">
+                                        {% if dish.photo %}
+                                            <img src="{{ asset('uploads/' ~ dish.photo) }}" class="dish-card__img" alt="{{ dish.title }}">
+                                        {% endif %}
+                                        <div class="p-3">
+                                            <h4 class="h6 mb-1">{{ dish.title }}</h4>
+                                            <p class="small text-muted mb-2">{{ dish.description }}</p>
+                                            {% if dish.allergens|length > 0 %}
+                                                <p class="small mb-0"><strong>Allergènes :</strong>
+                                                    {% for allergen in dish.allergens %}{{ allergen.label }}{% if not loop.last %}, {% endif %}{% endfor %}
+                                                </p>
+                                            {% else %}
+                                                <p class="small text-muted mb-0">Sans allergène renseigné</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                {% if menu.dish is empty %}
+                    <div class="alert alert-info">Composition en cours de mise à jour.</div>
+                {% endif %}
             </div>
-        {% endif %}
-        <h2 class="h4 mt-4">Plats du menu</h2>
-        <div class="row g-3">
-            {% for dish in menu.dishes %}
-                <div class="col-md-6"><div class="border rounded-3 p-3 bg-light h-100">
-                    <h3 class="h6 mb-1">{{ dish.title }}</h3><span class="badge bg-secondary">{{ dish.type }}</span><p class="small mt-2">{{ dish.description }}</p>
-                    {% if dish.allergens|length > 0 %}<p class="small mb-0"><strong>Allergènes :</strong> {% for allergen in dish.allergens %}{{ allergen.label }}{% if not loop.last %}, {% endif %}{% endfor %}</p>{% else %}<p class="small text-muted mb-0">Aucun allergène renseigné.</p>{% endif %}
-                </div></div>
-            {% else %}<div class="col-12"><div class="alert alert-info">Aucun plat renseigné pour ce menu.</div></div>{% endfor %}
+        </article>
+    </div>
+
+    <aside class="col-lg-4">
+        <div class="card card-vite order-sidebar sticky-top">
+            <div class="card-body">
+                <h2 class="h5 page-title">Commander ce menu</h2>
+                <ul class="list-group list-group-flush mb-3">
+                    <li class="list-group-item d-flex justify-content-between px-0"><span>Minimum</span><strong>{{ menu.minPeople }} pers.</strong></li>
+                    <li class="list-group-item d-flex justify-content-between px-0"><span>Prix</span><strong>{{ menu.pricePerPerson|number_format(2, ',', ' ') }} € / pers.</strong></li>
+                    <li class="list-group-item d-flex justify-content-between px-0"><span>Stock</span><strong>{{ menu.stockQuantity }} couvert(s)</strong></li>
+                </ul>
+                {% if not menu.isOrderable %}
+                    <div class="alert alert-danger small mb-0">
+                        {% if menu.stockQuantity > 0 and menu.stockQuantity < menu.minPeople %}
+                            Stock insuffisant pour le minimum de {{ menu.minPeople }} personnes.
+                        {% else %}
+                            Ce menu n'est plus disponible.
+                        {% endif %}
+                    </div>
+                {% elseif app.user %}
+                    <a href="{{ path('app_order_new', { slug: menu.slug }) }}" class="btn btn-vite w-100 btn-lg">Commander</a>
+                {% else %}
+                    <p class="small text-muted">Connectez-vous pour commander.</p>
+                    <a href="{{ path('app_login') }}" class="btn btn-vite w-100 mb-2">Connexion</a>
+                    <a href="{{ path('app_register') }}" class="btn btn-outline-vite w-100">Créer un compte</a>
+                {% endif %}
+            </div>
         </div>
-    </div></article></div>
-    <aside class="col-lg-4"><div class="card shadow-sm sticky-top" style="top: 1rem;"><div class="card-body">
-        <h2 class="h4">Commander</h2>
-        <ul class="list-group mb-3">
-            <li class="list-group-item d-flex justify-content-between"><span>Minimum</span><strong>{{ menu.minPeople }} personnes</strong></li>
-            <li class="list-group-item d-flex justify-content-between"><span>Prix</span><strong>{{ menu.pricePerPerson|number_format(2, ',', ' ') }} € / personne</strong></li>
-            <li class="list-group-item d-flex justify-content-between"><span>Stock</span><strong>{{ menu.stockQuantity }}</strong></li>
-        </ul>
-        {% if menu.stockQuantity <= 0 %}<div class="alert alert-danger">Ce menu n’est plus disponible.</div>{% elseif app.user %}<a href="{{ path('app_order_new', { slug: menu.slug }) }}" class="btn btn-warning w-100">Commander ce menu</a>{% else %}<div class="alert alert-info">Connectez-vous ou créez un compte pour commander.</div><a href="{{ path('app_login') }}" class="btn btn-warning w-100 mb-2">Connexion</a><a href="{{ path('app_register') }}" class="btn btn-outline-dark w-100">Créer un compte</a>{% endif %}
-    </div></div></aside>
+    </aside>
 </div>
 {% endblock %}

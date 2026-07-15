@@ -3,12 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Entity\Menu;
 use App\Entity\MenuOrder;
 use App\Entity\OrderStatusHistory;
 use App\Form\MenuOrderType;
 use App\Form\ProfileType;
 use App\Repository\MenuOrderRepository;
+use App\Service\OrderPricingService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -21,6 +21,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_USER')]
 final class AccountController extends AbstractController
 {
+    // page d'accueil espace client
     #[Route('', name: 'app_account', methods: ['GET'])]
     public function index(Security $security): Response
     {
@@ -84,7 +85,8 @@ final class AccountController extends AbstractController
         Request $request,
         MenuOrderRepository $menuOrderRepository,
         EntityManagerInterface $entityManager,
-        Security $security
+        Security $security,
+        OrderPricingService $orderPricingService,
     ): Response {
         $user = $security->getUser();
 
@@ -104,17 +106,21 @@ final class AccountController extends AbstractController
             return $this->redirectToRoute('app_account_order_show', ['id' => $order->getId()]);
         }
 
-        $form = $this->createForm(MenuOrderType::class, $order, ['menu' => $order->getMenu()]);
+        $menu = $order->getMenu();
+        $originalPeopleCount = $order->getPeopleCount();
+
+        $form = $this->createForm(MenuOrderType::class, $order, [
+            'menu' => $menu,
+            'max_people' => $menu->getStockQuantity() + $originalPeopleCount,
+        ]);
         $form->handleRequest($request);
-        $priceDetails = $this->calculatePriceDetails($order->getMenu(), $order);
+        $priceDetails = $orderPricingService->calculatePriceDetails($menu, $order);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($order->getPeopleCount() < $order->getMenu()->getMinPeople()) {
-                $this->addFlash('danger', 'Le nombre de personnes doit respecter le minimum du menu.');
-                return $this->render('account/order_edit.html.twig', ['form' => $form, 'order' => $order, 'priceDetails' => $priceDetails]);
-            }
+            $stockDelta = $order->getPeopleCount() - $originalPeopleCount;
+            $menu->setStockQuantity($menu->getStockQuantity() - $stockDelta);
 
-            $priceDetails = $this->calculatePriceDetails($order->getMenu(), $order);
+            $priceDetails = $orderPricingService->calculatePriceDetails($menu, $order);
             $order->setMenuPrice((string) $priceDetails['menuPrice']);
             $order->setDiscountAmount((string) $priceDetails['discountAmount']);
             $order->setDeliveryPrice((string) $priceDetails['deliveryPrice']);
@@ -133,7 +139,12 @@ final class AccountController extends AbstractController
             return $this->redirectToRoute('app_account_order_show', ['id' => $order->getId()]);
         }
 
-        return $this->render('account/order_edit.html.twig', ['form' => $form, 'order' => $order, 'priceDetails' => $priceDetails]);
+        return $this->render('account/order_edit.html.twig', [
+            'form' => $form,
+            'order' => $order,
+            'menu' => $menu,
+            'priceDetails' => $priceDetails,
+        ]);
     }
 
     #[Route('/commande/{id}/annuler', name: 'app_account_order_cancel', methods: ['POST'])]
@@ -168,7 +179,7 @@ final class AccountController extends AbstractController
 
         $order->setStatus('ANNULEE');
         $order->setUpdatedAt(new \DateTimeImmutable());
-        $order->getMenu()->setStockQuantity($order->getMenu()->getStockQuantity() + 1);
+        $order->getMenu()->setStockQuantity($order->getMenu()->getStockQuantity() + $order->getPeopleCount());
 
         $history = new OrderStatusHistory();
         $history->setMenuOrder($order);
@@ -181,21 +192,5 @@ final class AccountController extends AbstractController
 
         $this->addFlash('success', 'Votre commande a été annulée.');
         return $this->redirectToRoute('app_account_orders');
-    }
-
-    private function calculatePriceDetails(Menu $menu, MenuOrder $order): array
-    {
-        $peopleCount = max((int) $order->getPeopleCount(), (int) $menu->getMinPeople());
-        $menuPrice = $peopleCount * (float) $menu->getPricePerPerson();
-        $discountAmount = $peopleCount >= $menu->getMinPeople() + 5 ? $menuPrice * 0.10 : 0;
-        $city = mb_strtolower((string) $order->getDeliveryCity());
-        $deliveryPrice = $city === 'bordeaux' ? 0 : 5 + (($order->getDistanceKm() ?: 0) * 0.59);
-
-        return [
-            'menuPrice' => round($menuPrice, 2),
-            'discountAmount' => round($discountAmount, 2),
-            'deliveryPrice' => round($deliveryPrice, 2),
-            'totalPrice' => round($menuPrice - $discountAmount + $deliveryPrice, 2),
-        ];
     }
 }

@@ -57,7 +57,7 @@ class Menu
     /**
      * @var Collection<int, MenuImage>
      */
-    #[ORM\OneToMany(targetEntity: MenuImage::class, mappedBy: 'menu', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: MenuImage::class, mappedBy: 'menu', orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $images;
 
     /**
@@ -168,6 +168,13 @@ class Menu
         $this->stockQuantity = $stockQuantity;
 
         return $this;
+    }
+
+    public function isOrderable(): bool
+    {
+        return $this->isActive
+            && $this->stockQuantity > 0
+            && $this->stockQuantity >= $this->minPeople;
     }
 
     public function isActive(): ?bool
@@ -314,4 +321,18 @@ class Menu
         return $this;
     }
 
+    /**
+     * Alias pratique pour les templates Twig.
+     *
+     * @return Collection<int, Dish>
+     */
+    public function getDishes(): Collection
+    {
+        return $this->dish;
+    }
+
+    public function __toString(): string
+    {
+        return (string) $this->title;
+    }
 }

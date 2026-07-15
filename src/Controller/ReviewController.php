@@ -39,8 +39,8 @@ final class ReviewController extends AbstractController
             throw $this->createNotFoundException('Commande introuvable.');
         }
 
-        if ($order->getStatus() !== 'TERMINEE') {
-            $this->addFlash('danger', 'Vous pourrez donner un avis uniquement lorsque la commande sera terminée.');
+        if (!$order->canReceiveReview()) {
+            $this->addFlash('danger', 'Vous pourrez donner un avis une fois la commande livrée.');
             return $this->redirectToRoute('app_account_order_show', ['id' => $order->getId()]);
         }
 

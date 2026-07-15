@@ -8,6 +8,8 @@ use App\Entity\OrderStatusHistory;
 use App\Entity\User;
 use App\Form\MenuOrderType;
 use App\Repository\MenuRepository;
+use App\Service\EmailService;
+use App\Service\OrderPricingService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -19,13 +21,16 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_USER')]
 final class OrderController extends AbstractController
 {
+    // création d'une commande client
     #[Route('/menus/{slug}/commander', name: 'app_order_new', methods: ['GET', 'POST'])]
     public function new(
         string $slug,
         Request $request,
         MenuRepository $menuRepository,
         EntityManagerInterface $entityManager,
-        Security $security
+        Security $security,
+        EmailService $emailService,
+        OrderPricingService $orderPricingService,
     ): Response {
         $menu = $menuRepository->findOneBy([
             'slug' => $slug,
@@ -36,8 +41,13 @@ final class OrderController extends AbstractController
             throw $this->createNotFoundException('Menu introuvable.');
         }
 
-        if ($menu->getStockQuantity() <= 0) {
-            $this->addFlash('danger', 'Ce menu n’est plus disponible.');
+        if (!$menu->isOrderable()) {
+            // stock trop bas ou menu désactivé
+            $message = $menu->getStockQuantity() > 0 && $menu->getStockQuantity() < $menu->getMinPeople()
+                ? 'Stock insuffisant pour le minimum de ' . $menu->getMinPeople() . ' personnes.'
+                : 'Ce menu n’est plus disponible.';
+
+            $this->addFlash('danger', $message);
 
             return $this->redirectToRoute('app_menu_show', [
                 'slug' => $menu->getSlug(),
@@ -59,24 +69,15 @@ final class OrderController extends AbstractController
 
         $form = $this->createForm(MenuOrderType::class, $order, [
             'menu' => $menu,
+            'max_people' => $menu->getStockQuantity(),
         ]);
 
         $form->handleRequest($request);
 
-        $priceDetails = $this->calculatePriceDetails($menu, $order);
+        $priceDetails = $orderPricingService->calculatePriceDetails($menu, $order);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($order->getPeopleCount() < $menu->getMinPeople()) {
-                $this->addFlash('danger', 'Le nombre de personnes doit respecter le minimum du menu.');
-
-                return $this->render('order/new.html.twig', [
-                    'form' => $form,
-                    'menu' => $menu,
-                    'priceDetails' => $priceDetails,
-                ]);
-            }
-
-            $priceDetails = $this->calculatePriceDetails($menu, $order);
+            $priceDetails = $orderPricingService->calculatePriceDetails($menu, $order);
 
             $order->setOrderNumber('VG-' . date('Ymd-His'));
             $order->setMenuPrice((string) $priceDetails['menuPrice']);
@@ -95,11 +96,14 @@ final class OrderController extends AbstractController
             $history->setComment('Commande créée par le client.');
             $history->setCreatedAt(new \DateTimeImmutable());
 
-            $menu->setStockQuantity($menu->getStockQuantity() - 1);
+            // on enlève le stock (nombre de couverts commandés)
+            $menu->setStockQuantity($menu->getStockQuantity() - $order->getPeopleCount());
 
             $entityManager->persist($order);
             $entityManager->persist($history);
             $entityManager->flush();
+
+            $emailService->sendOrderConfirmation($order);
 
             $this->addFlash('success', 'Votre commande a bien été enregistrée.');
 
@@ -113,36 +117,5 @@ final class OrderController extends AbstractController
             'menu' => $menu,
             'priceDetails' => $priceDetails,
         ]);
-    }
-
-    private function calculatePriceDetails(Menu $menu, MenuOrder $order): array
-    {
-        $peopleCount = max(
-            (int) $order->getPeopleCount(),
-            (int) $menu->getMinPeople()
-        );
-
-        $menuPrice = $peopleCount * (float) $menu->getPricePerPerson();
-        $discountAmount = 0;
-
-        if ($peopleCount >= $menu->getMinPeople() + 5) {
-            $discountAmount = $menuPrice * 0.10;
-        }
-
-        $city = mb_strtolower((string) $order->getDeliveryCity());
-
-        if ($city === 'bordeaux') {
-            $deliveryPrice = 0;
-        } else {
-            $distanceKm = $order->getDistanceKm() ?? 0;
-            $deliveryPrice = 5 + ((float) $distanceKm * 0.59);
-        }
-
-        return [
-            'menuPrice' => round($menuPrice, 2),
-            'discountAmount' => round($discountAmount, 2),
-            'deliveryPrice' => round($deliveryPrice, 2),
-            'totalPrice' => round($menuPrice - $discountAmount + $deliveryPrice, 2),
-        ];
     }
 }

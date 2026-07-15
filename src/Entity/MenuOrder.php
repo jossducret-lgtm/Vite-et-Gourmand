@@ -375,6 +375,11 @@ class MenuOrder
         return $this;
     }
 
+    public function canReceiveReview(): bool
+    {
+        return in_array($this->status, ['LIVREE', 'TERMINEE'], true);
+    }
+
     public function getDistanceKm(): ?float
     {
         return $this->distanceKm;

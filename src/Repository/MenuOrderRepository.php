@@ -47,6 +47,11 @@ final class MenuOrderRepository extends ServiceEntityRepository
             ->addGroupBy('m.title')
             ->orderBy('ordersCount', 'DESC');
 
+        if (!empty($filters['menuId'])) {
+            $qb->andWhere('m.id = :menuId')
+                ->setParameter('menuId', $filters['menuId']);
+        }
+
         if (!empty($filters['dateStart'])) {
             $qb->andWhere('o.createdAt >= :dateStart')
                 ->setParameter('dateStart', new \DateTimeImmutable($filters['dateStart'] . ' 00:00:00'));

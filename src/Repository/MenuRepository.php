@@ -13,20 +13,7 @@ final class MenuRepository extends ServiceEntityRepository
         parent::__construct($registry, Menu::class);
     }
 
-    /**
-     * Récupère les menus actifs avec filtres dynamiques.
-     *
-     * Utilisé pour :
-     * - la page /menus
-     * - la route AJAX /menus/filter
-     *
-     * Filtres possibles :
-     * - minPrice
-     * - maxPrice
-     * - theme
-     * - diet
-     * - minPeople
-     */
+    /** menus actifs avec filtres (page catalogue + ajax) */
     public function findActiveWithFilters(array $filters = []): array
     {
         $qb = $this->createQueryBuilder('m')
@@ -61,14 +48,7 @@ final class MenuRepository extends ServiceEntityRepository
         }
 
         if (!empty($filters['minPeople']) && is_numeric($filters['minPeople'])) {
-            /**
-             * Ici on cherche les menus dont le minimum est inférieur ou égal
-             * au nombre de personnes renseigné par le visiteur.
-             *
-             * Exemple :
-             * L'utilisateur indique 8 personnes.
-             * On affiche les menus possibles jusqu'à 8 personnes minimum.
-             */
+            // ex: si le client veut 8 pers, on montre les menus avec min <= 8
             $qb->andWhere('m.minPeople <= :minPeople')
                 ->setParameter('minPeople', $filters['minPeople']);
         }
@@ -76,12 +56,7 @@ final class MenuRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    /**
-     * Récupère un menu actif par son slug.
-     *
-     * Utilisé pour la page détail :
-     * /menus/{slug}
-     */
+    /** détail menu par slug (côté public) */
     public function findActiveBySlug(string $slug): ?Menu
     {
         return $this->createQueryBuilder('m')
@@ -91,7 +66,7 @@ final class MenuRepository extends ServiceEntityRepository
             ->addSelect('d')
             ->leftJoin('m.images', 'i')
             ->addSelect('i')
-            ->leftJoin('m.dishes', 'dish')
+            ->leftJoin('m.dish', 'dish')
             ->addSelect('dish')
             ->leftJoin('dish.allergens', 'a')
             ->addSelect('a')
@@ -103,11 +78,7 @@ final class MenuRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    /**
-     * Récupère les derniers menus actifs.
-     *
-     * Utile pour afficher quelques menus sur l'accueil si besoin.
-     */
+    /** pour afficher quelques menus sur l'accueil */
     public function findLatestActive(int $limit = 3): array
     {
         return $this->createQueryBuilder('m')
@@ -125,12 +96,7 @@ final class MenuRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * Recherche simple côté employé/admin.
-     *
-     * Utile si tu veux plus tard ajouter une barre de recherche
-     * dans le CRUD des menus.
-     */
+    /** recherche simple dans le back-office */
     public function searchForBackOffice(?string $search = null): array
     {
         $qb = $this->createQueryBuilder('m')

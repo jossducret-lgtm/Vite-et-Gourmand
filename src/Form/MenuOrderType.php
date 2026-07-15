@@ -18,6 +18,26 @@ final class MenuOrderType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $menu = $options['menu'];
+        $maxPeople = $options['max_people'] ?? ($menu ? $menu->getStockQuantity() : null);
+
+        $peopleConstraints = [
+            new Assert\NotBlank(),
+            new Assert\Positive(),
+        ];
+
+        if ($menu) {
+            $peopleConstraints[] = new Assert\GreaterThanOrEqual(
+                $menu->getMinPeople(),
+                message: 'Le nombre de personnes doit être au minimum de {{ compared_value }}.'
+            );
+        }
+
+        if ($maxPeople !== null) {
+            $peopleConstraints[] = new Assert\LessThanOrEqual(
+                $maxPeople,
+                message: 'Stock insuffisant : {{ compared_value }} couvert(s) disponible(s) au maximum.'
+            );
+        }
 
         $builder
             ->add('serviceDate', DateType::class, [
@@ -45,12 +65,22 @@ final class MenuOrderType extends AbstractType
             ->add('distanceKm', NumberType::class, [
                 'label' => 'Distance en km depuis Bordeaux',
                 'required' => false,
-                'help' => 'À renseigner uniquement si la livraison est hors Bordeaux.',
+                'help' => 'Remplir seulement si livraison hors Bordeaux.',
             ])
             ->add('peopleCount', IntegerType::class, [
                 'label' => 'Nombre de personnes',
-                'help' => $menu ? 'Minimum : ' . $menu->getMinPeople() . ' personnes' : null,
-                'constraints' => [new Assert\NotBlank(), new Assert\Positive()],
+                'help' => $menu
+                    ? sprintf(
+                        'Minimum : %d personnes. Stock disponible : %d couvert(s).',
+                        $menu->getMinPeople(),
+                        $maxPeople ?? $menu->getStockQuantity()
+                    )
+                    : null,
+                'attr' => [
+                    'min' => $menu?->getMinPeople(),
+                    'max' => $maxPeople,
+                ],
+                'constraints' => $peopleConstraints,
             ]);
     }
 
@@ -59,6 +89,7 @@ final class MenuOrderType extends AbstractType
         $resolver->setDefaults([
             'data_class' => MenuOrder::class,
             'menu' => null,
+            'max_people' => null,
         ]);
     }
 }
