@@ -27,8 +27,9 @@ final class ContactController extends AbstractController
             $entityManager->persist($contactMessage);
             $entityManager->flush();
 
+            // mail envoyé à l'entreprise
             $emailService->sendContactMessage($contactMessage);
-            $this->addFlash('success', 'Votre demande a bien été envoyée à l’entreprise.');
+            $this->addFlash('success', 'Message envoyé, nous vous répondrons rapidement.');
 
             return $this->redirectToRoute('app_contact');
         }

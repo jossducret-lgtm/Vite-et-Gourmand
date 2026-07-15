@@ -1,0 +1,7 @@
+<!DOCTYPE html>
+<html lang="fr"><body style="font-family:Arial,sans-serif;">
+<h1 style="color:#6b1f2a;">Confirmation de commande</h1>
+<p>Bonjour {{ order.user.firstName }},</p>
+<p>Votre commande <strong>{{ order.orderNumber }}</strong> pour le menu <strong>{{ order.menu.title }}</strong> est enregistrée.</p>
+<p>Total : <strong>{{ order.totalPrice|number_format(2, ',', ' ') }} €</strong></p>
+</body></html>
