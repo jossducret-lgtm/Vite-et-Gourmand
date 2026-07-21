@@ -1,4 +1,12 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+<div class="row g-3">
+    <div class="col-md-6">{{ form_row(form.dayOfWeek) }}</div>
+    <div class="col-md-6">{{ form_row(form.isClosed) }}</div>
+    <div class="col-md-6">{{ form_row(form.openingTime) }}</div>
+    <div class="col-md-6">{{ form_row(form.closingTime) }}</div>
+</div>
+<div class="d-flex flex-wrap gap-2 mt-3">
+    <button class="btn btn-vite" type="submit">Enregistrer</button>
+    <a href="{{ path('app_employee_opening_hour_index') }}" class="btn btn-outline-secondary">Retour</a>
+</div>
 {{ form_end(form) }}

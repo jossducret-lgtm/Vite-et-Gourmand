@@ -1,10 +1,44 @@
 {% extends 'base.html.twig' %}
 {% block title %}Mon compte{% endblock %}
 {% block body %}
-<h1 class="fw-bold mb-4">Mon compte</h1>
+<h1 class="page-title mb-1">Bonjour {{ user.firstName }}</h1>
+<p class="text-muted mb-4">Compte client : profil, commandes, avis.</p>
+
 <div class="row g-4">
-    <div class="col-md-4"><div class="card shadow-sm"><div class="card-body"><h2 class="h5">Mes informations</h2><p class="mb-1">{{ user.firstName }} {{ user.lastName }}</p><p class="mb-1">{{ user.email }}</p><p class="mb-0">{{ user.phone }}</p><a href="{{ path('app_account_profile') }}" class="btn btn-outline-dark mt-3">Modifier mon profil</a></div></div></div>
-    <div class="col-md-4"><a href="{{ path('app_account_orders') }}" class="text-decoration-none"><div class="card shadow-sm h-100"><div class="card-body"><h2 class="h5">Mes commandes</h2><p class="text-muted mb-0">Voir le détail et le suivi de vos commandes.</p></div></div></a></div>
-    <div class="col-md-4"><a href="{{ path('app_menu_index') }}" class="text-decoration-none"><div class="card shadow-sm h-100"><div class="card-body"><h2 class="h5">Commander</h2><p class="text-muted mb-0">Découvrir les menus disponibles.</p></div></div></a></div>
+    <div class="col-md-4">
+        <div class="card card-vite account-card">
+            <div class="card-body p-4">
+                <div class="account-card__icon mb-3">i</div>
+                <h2 class="h5 page-title">Mes informations</h2>
+                <p class="mb-1">{{ user.firstName }} {{ user.lastName }}</p>
+                <p class="mb-1 small text-muted">{{ user.email }}</p>
+                <p class="mb-0 small">{{ user.phone }}</p>
+                <p class="small text-muted mt-2 mb-0">{{ user.address }}, {{ user.postalCode }} {{ user.city }}</p>
+                <a href="{{ path('app_account_profile') }}" class="btn btn-outline-vite btn-sm mt-3">Modifier mon profil</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <a href="{{ path('app_account_orders') }}" class="text-decoration-none text-body">
+            <div class="card card-vite account-card">
+                <div class="card-body p-4">
+                    <div class="account-card__icon mb-3">C</div>
+                    <h2 class="h5 page-title">Mes commandes</h2>
+                    <p class="text-muted small mb-0">Suivi, modification ou annulation si la commande est en attente.</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a href="{{ path('app_menu_index') }}" class="text-decoration-none text-body">
+            <div class="card card-vite account-card">
+                <div class="card-body p-4">
+                    <div class="account-card__icon mb-3">+</div>
+                    <h2 class="h5 page-title">Nouvelle commande</h2>
+                    <p class="text-muted small mb-0">Aller au catalogue pour commander un menu.</p>
+                </div>
+            </div>
+        </a>
+    </div>
 </div>
 {% endblock %}

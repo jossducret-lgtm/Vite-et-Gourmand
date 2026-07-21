@@ -1,10 +1,56 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/backoffice.html.twig' %}
 {% block title %}Espace employé{% endblock %}
-{% block body %}
-<h1 class="fw-bold mb-4">Espace employé</h1>
-<div class="row g-4">
-    <div class="col-md-4"><a class="text-decoration-none" href="{{ path('app_employee_orders') }}"><div class="card shadow-sm h-100"><div class="card-body"><h2 class="h5">Commandes en attente</h2><p class="display-6">{{ pendingOrdersCount }}</p></div></div></a></div>
-    <div class="col-md-4"><a class="text-decoration-none" href="{{ path('app_employee_reviews') }}"><div class="card shadow-sm h-100"><div class="card-body"><h2 class="h5">Avis à modérer</h2><p class="display-6">{{ pendingReviewsCount }}</p></div></div></a></div>
-    <div class="col-md-4"><div class="card shadow-sm h-100"><div class="card-body"><h2 class="h5">Gestion</h2><p class="text-muted mb-0">Utilisez les CRUD générés pour menus, plats et horaires.</p></div></div></div>
+{% block backoffice_body %}
+<h1 class="page-title mb-4">Tableau de bord</h1>
+<div class="row g-4 mb-4">
+    <div class="col-sm-6 col-lg-4">
+        <a href="{{ path('app_employee_orders') }}" class="text-decoration-none">
+            <div class="card card-vite stat-card h-100">
+                <div class="card-body">
+                    <h2 class="h6 text-muted">Commandes en attente</h2>
+                    <p class="display-6 page-title mb-0">{{ pendingOrdersCount }}</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+        <a href="{{ path('app_employee_reviews') }}" class="text-decoration-none">
+            <div class="card card-vite stat-card h-100">
+                <div class="card-body">
+                    <h2 class="h6 text-muted">Avis à modérer</h2>
+                    <p class="display-6 page-title mb-0">{{ pendingReviewsCount }}</p>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="card card-vite">
+    <div class="card-body">
+        <h2 class="h6 text-muted text-uppercase mb-3">Organisation du catalogue</h2>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="border rounded p-3 h-100">
+                    <strong>1. Thèmes / événements</strong>
+                    <p class="small text-muted mb-2">Noël, Pâques, Mariage...</p>
+                    <a href="{{ path('app_employee_theme_index') }}" class="btn btn-sm btn-vite">Gérer</a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="border rounded p-3 h-100">
+                    <strong>2. Plats</strong>
+                    <p class="small text-muted mb-2">Entrées, plats, desserts + allergènes</p>
+                    <a href="{{ path('app_employee_dish_index') }}" class="btn btn-sm btn-vite">Gérer</a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="border rounded p-3 h-100">
+                    <strong>3. Menus</strong>
+                    <p class="small text-muted mb-2">Assembler les plats et publier</p>
+                    <a href="{{ path('app_employee_menu_index') }}" class="btn btn-sm btn-vite">Gérer</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

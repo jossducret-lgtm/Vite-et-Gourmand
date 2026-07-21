@@ -1,5 +1,28 @@
 {% extends 'base.html.twig' %}
 {% block title %}Créer un compte{% endblock %}
 {% block body %}
-<div class="row justify-content-center"><div class="col-lg-8"><div class="card shadow-sm"><div class="card-body p-4"><h1 class="h3">Créer un compte</h1><p class="text-muted">Créez un compte pour commander un menu en ligne.</p>{{ form_start(registrationForm) }}{{ form_widget(registrationForm) }}<button type="submit" class="btn btn-warning w-100">Créer mon compte</button>{{ form_end(registrationForm) }}</div></div></div></div>
+<div class="auth-page auth-page--wide">
+    <div class="card card-vite">
+        <div class="card-body p-4 p-md-5">
+            <h1 class="page-title h3 mb-2">Créer un compte client</h1>
+            <p class="text-muted mb-4">Inscription obligatoire pour commander un menu en ligne.</p>
+            {{ form_start(registrationForm) }}
+            <div class="row g-3">
+                <div class="col-md-6">{{ form_row(registrationForm.firstName) }}</div>
+                <div class="col-md-6">{{ form_row(registrationForm.lastName) }}</div>
+                <div class="col-md-6">{{ form_row(registrationForm.email) }}</div>
+                <div class="col-md-6">{{ form_row(registrationForm.phone) }}</div>
+                <div class="col-12">{{ form_row(registrationForm.address) }}</div>
+                <div class="col-md-4">{{ form_row(registrationForm.postalCode) }}</div>
+                <div class="col-md-4">{{ form_row(registrationForm.city) }}</div>
+                <div class="col-md-4">{{ form_row(registrationForm.country) }}</div>
+                <div class="col-12">{{ form_row(registrationForm.plainPassword) }}</div>
+                <div class="col-12">{{ form_row(registrationForm.agreeTerms) }}</div>
+            </div>
+            <button type="submit" class="btn btn-vite w-100 mt-3">Créer mon compte</button>
+            <p class="text-center small text-muted mt-3 mb-0">Déjà inscrit ? <a href="{{ path('app_login') }}">Se connecter</a></p>
+            {{ form_end(registrationForm) }}
+        </div>
+    </div>
+</div>
 {% endblock %}

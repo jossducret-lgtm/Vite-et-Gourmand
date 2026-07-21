@@ -1,3 +1,1022 @@
-body {
-    background-color: skyblue;
+:root {
+    /* couleurs charte Vite & Gourmand */
+    --vg-bordeaux: #6b1f2a;
+    --vg-bordeaux-dark: #4a141c;
+    --vg-gold: #c9a227;
+    --vg-gold-light: #f0d878;
+    --vg-cream: #faf6ef;
+    --vg-cream-dark: #f0e6d6;
+    --vg-ink: #2b2118;
+    --vg-muted: #6c635a;
+    --vg-success: #2f6b4f;
+    --vg-radius: 0.75rem;
+    --vg-shadow: 0 8px 24px rgba(43, 33, 24, 0.08);
 }
+
+body {
+    font-family: "Source Sans 3", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--vg-ink);
+    background: var(--vg-cream);
+    line-height: 1.6;
+}
+
+.font-display,
+.page-title,
+.section-vite__title,
+.hero-restaurant__title,
+.page-banner__title,
+.menu-card__title,
+.contact-info__title,
+.cta-band__title {
+    font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+}
+
+/* Navigation */
+.navbar-vite {
+    background: linear-gradient(90deg, var(--vg-bordeaux-dark), var(--vg-bordeaux)) !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+
+.navbar-brand {
+    font-size: 1.15rem;
+    letter-spacing: 0.02em;
+}
+
+.navbar-vite .nav-link {
+    color: rgba(255, 255, 255, 0.9) !important;
+    padding: 0.5rem 0.75rem !important;
+    border-radius: 0.375rem;
+    transition: background 0.15s;
+}
+
+.navbar-vite .nav-link:hover,
+.navbar-vite .nav-link:focus {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff !important;
+}
+
+/* Boutons */
+.btn-vite {
+    background: var(--vg-gold);
+    border-color: var(--vg-gold);
+    color: var(--vg-bordeaux-dark);
+    font-weight: 600;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1.25rem;
+}
+
+.btn-vite:hover,
+.btn-vite:focus {
+    background: var(--vg-gold-light);
+    border-color: var(--vg-gold-light);
+    color: var(--vg-bordeaux-dark);
+}
+
+.btn-outline-vite {
+    border-color: var(--vg-gold);
+    color: var(--vg-bordeaux);
+    font-weight: 600;
+}
+
+.btn-outline-vite:hover {
+    background: var(--vg-gold);
+    color: var(--vg-bordeaux-dark);
+}
+
+/* Cartes */
+.card-vite {
+    border: 1px solid rgba(43, 33, 24, 0.06);
+    box-shadow: var(--vg-shadow);
+    border-radius: var(--vg-radius);
+    background: #fff;
+}
+
+.menu-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    overflow: hidden;
+}
+
+.menu-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(43, 33, 24, 0.12);
+}
+
+.menu-card__img {
+    height: 200px;
+    object-fit: cover;
+    width: 100%;
+}
+
+.menu-card__placeholder {
+    height: 200px;
+    background: linear-gradient(135deg, var(--vg-cream-dark), #e8ddd0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--vg-muted);
+    font-size: 0.9rem;
+}
+
+.menu-card__price {
+    color: var(--vg-bordeaux);
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+/* hero page d'accueil */
+.hero-restaurant {
+    position: relative;
+    min-height: 420px;
+    display: flex;
+    align-items: center;
+    padding: 4rem 0 3rem;
+    background: url("/uploads/menu-noel-6a563c1f94dc44.05703569.png") center / cover no-repeat;
+    color: #fff;
+}
+
+.hero-restaurant__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(74, 20, 28, 0.82);
+}
+
+.hero-restaurant__fade {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3rem;
+    background: linear-gradient(to bottom, transparent, var(--vg-cream));
+}
+
+.hero-restaurant__content {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-restaurant__meta {
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+    opacity: 0.9;
+}
+
+.hero-restaurant__title {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+    max-width: 18ch;
+}
+
+.hero-restaurant__lead {
+    font-size: 1.05rem;
+    max-width: 34rem;
+    margin-bottom: 0;
+}
+
+.hero-restaurant__card {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: var(--vg-radius);
+    padding: 1.25rem;
+}
+
+.hero-restaurant__card-label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.hero-restaurant__list {
+    list-style: disc;
+    padding-left: 1.25rem;
+    margin: 0;
+}
+
+.hero-restaurant__list li {
+    margin-bottom: 0.35rem;
+    font-size: 0.95rem;
+}
+
+.hero-restaurant .btn-outline-light:hover {
+    background: #fff;
+    color: var(--vg-bordeaux-dark);
+}
+
+/* titres de section */
+.section-vite__header {
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.section-vite__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--vg-bordeaux);
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+}
+
+.section-vite__subtitle {
+    color: var(--vg-muted);
+    max-width: 520px;
+}
+
+.section-vite--cream {
+    background: linear-gradient(180deg, #fff 0%, var(--vg-cream-dark) 100%);
+    border: 1px solid #eadfce;
+}
+
+.theme-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.75rem 1rem;
+    background: #fff;
+    border: 1px solid #eadfce;
+    border-radius: var(--vg-radius);
+    box-shadow: var(--vg-shadow);
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    height: 100%;
+    color: var(--vg-ink);
+}
+
+.theme-tile:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(43, 33, 24, 0.12);
+    border-color: var(--vg-gold);
+    color: var(--vg-bordeaux);
+}
+
+.theme-tile__label {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--vg-bordeaux);
+    margin-bottom: 0.35rem;
+}
+
+.theme-tile__link {
+    font-size: 0.85rem;
+    color: var(--vg-muted);
+}
+
+.savoir-grid {
+    display: grid;
+    grid-template-columns: 1fr 0.65fr;
+    grid-template-rows: auto auto;
+    gap: 1rem;
+}
+
+.savoir-grid__photo {
+    margin: 0;
+    overflow: hidden;
+    border-radius: var(--vg-radius);
+    box-shadow: var(--vg-shadow);
+}
+
+.savoir-grid__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.savoir-grid__photo--main {
+    grid-row: span 2;
+    min-height: 320px;
+}
+
+.savoir-grid__photo--secondary {
+    min-height: 150px;
+}
+
+.savoir-point {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+
+.savoir-point__num {
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--vg-bordeaux);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.step-card {
+    background: #fff;
+    border: 1px solid #eadfce;
+    border-radius: var(--vg-radius);
+    padding: 1.5rem;
+    height: 100%;
+    box-shadow: var(--vg-shadow);
+}
+
+.step-card__step {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background: var(--vg-gold);
+    color: var(--vg-bordeaux-dark);
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+}
+
+.step-card__title {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--vg-bordeaux);
+    margin-bottom: 0.5rem;
+}
+
+.review-card-restaurant {
+    background: #fff;
+    border: 1px solid #eadfce;
+    border-radius: var(--vg-radius);
+    padding: 1.5rem;
+    box-shadow: var(--vg-shadow);
+    border-top: 3px solid var(--vg-gold);
+}
+
+.review-card-restaurant__quote {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.review-card-restaurant__author {
+    font-size: 0.85rem;
+    color: var(--vg-muted);
+    font-weight: 600;
+}
+
+.cta-band {
+    background: linear-gradient(135deg, var(--vg-bordeaux-dark), var(--vg-bordeaux));
+    color: #fff;
+}
+
+.cta-band__title {
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+}
+
+.cta-band__text {
+    max-width: 520px;
+    opacity: 0.9;
+}
+
+/* Bannières pages internes */
+.page-banner {
+    position: relative;
+    padding: 4rem 0 3rem;
+    margin-bottom: 2rem;
+    color: #fff;
+    background-size: cover;
+    background-position: center;
+}
+
+.page-banner__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(74, 20, 28, 0.88), rgba(43, 33, 24, 0.6));
+}
+
+.page-banner__content {
+    position: relative;
+    z-index: 1;
+}
+
+.page-banner--menus {
+    background-image: url("/uploads/menu-noel-6a563bf1efc6c5.45195855.png");
+}
+
+.page-banner--contact {
+    background-image: url("/uploads/menu-noel-6a563c1f94dc44.05703569.png");
+}
+
+.page-banner__title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.page-banner__lead {
+    font-size: 1.1rem;
+    max-width: 36rem;
+    opacity: 0.92;
+    margin-bottom: 0;
+}
+
+/* pastilles filtre thème (page menus) */
+.theme-chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.theme-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    height: 2.5rem;
+    margin: 0;
+    padding: 0 1.1rem;
+    border: 1px solid #dcccb8;
+    background: #fff;
+    color: var(--vg-ink);
+    border-radius: 2rem;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+}
+
+.theme-chip:hover {
+    border-color: var(--vg-gold);
+    color: var(--vg-bordeaux);
+}
+
+.theme-chip:focus-visible {
+    outline: 3px solid var(--vg-gold);
+    outline-offset: 2px;
+}
+
+.theme-chip--active {
+    background: var(--vg-bordeaux);
+    border-color: var(--vg-bordeaux);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(107, 31, 42, 0.25);
+}
+
+.filter-panel--restaurant {
+    border-top: 3px solid var(--vg-gold);
+}
+
+.catalog-count {
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--vg-muted);
+    margin-bottom: 1rem;
+}
+
+.catalog-loading {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--vg-muted);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.catalog-loading__dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--vg-gold);
+    animation: pulse-dot 1s ease infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 0.35; transform: scale(0.9); }
+    50% { opacity: 1; transform: scale(1.1); }
+}
+
+.catalog-empty {
+    background: #fff;
+    border: 1px dashed #dcccb8;
+    border-radius: var(--vg-radius);
+}
+
+.catalog-empty__title {
+    font-weight: 600;
+    color: var(--vg-bordeaux);
+}
+
+.menu-card--restaurant .menu-card__media {
+    position: relative;
+}
+
+.menu-card__ribbon {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    background: var(--vg-bordeaux);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.65rem;
+    border-radius: 0.25rem;
+}
+
+.menu-card__meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.menu-card__courses {
+    font-size: 0.8rem;
+    color: var(--vg-muted);
+}
+
+.menu-card__title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--vg-bordeaux);
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+}
+
+.menu-card__desc {
+    font-size: 0.92rem;
+    color: var(--vg-muted);
+    margin-bottom: 1rem;
+}
+
+.menu-card__footer {
+    margin-top: auto;
+}
+
+.menu-card__pricing {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 0.5rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #eadfce;
+}
+
+.menu-card__price-unit {
+    font-size: 0.85rem;
+    color: var(--vg-muted);
+}
+
+.menu-card__min {
+    font-size: 0.8rem;
+    color: var(--vg-muted);
+    margin-left: auto;
+}
+
+.menu-card__placeholder {
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.menu-card__placeholder-icon {
+    font-size: 2rem;
+    opacity: 0.5;
+}
+
+/* Contact */
+.contact-info {
+    background: #fff;
+    border: 1px solid #eadfce;
+    border-radius: var(--vg-radius);
+    padding: 1.75rem;
+    box-shadow: var(--vg-shadow);
+}
+
+.contact-info__title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--vg-bordeaux);
+    margin-bottom: 0.5rem;
+}
+
+.contact-info__intro {
+    color: var(--vg-muted);
+    margin-bottom: 1.5rem;
+}
+
+.contact-info__block {
+    margin-bottom: 1.25rem;
+    font-style: normal;
+}
+
+.contact-info__label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--vg-bordeaux);
+    margin-bottom: 0.35rem;
+}
+
+.contact-info a {
+    color: var(--vg-bordeaux);
+    text-decoration: none;
+}
+
+.contact-info a:hover {
+    text-decoration: underline;
+}
+
+.contact-info__hours li {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid #f0e6d6;
+    font-size: 0.92rem;
+}
+
+.contact-info__hours li:last-child {
+    border-bottom: none;
+}
+
+.contact-map {
+    border-radius: var(--vg-radius);
+    overflow: hidden;
+    border: 1px solid #eadfce;
+    height: 200px;
+}
+
+.contact-map iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+}
+
+.contact-form-card {
+    border-top: 3px solid var(--vg-gold);
+}
+
+/* Hero legacy (autres pages) */
+.hero-vite {
+    background: linear-gradient(135deg, #fff 0%, var(--vg-cream-dark) 100%);
+    border: 1px solid #eadfce;
+    border-radius: 1rem;
+}
+
+.hero-vite__badge {
+    background: var(--vg-gold);
+    color: var(--vg-bordeaux-dark);
+    font-weight: 600;
+}
+
+/* Footer */
+.footer-vite {
+    background: var(--vg-bordeaux-dark);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.footer-vite a {
+    color: rgba(255, 255, 255, 0.85) !important;
+    text-decoration: none;
+}
+
+.footer-vite a:hover {
+    color: var(--vg-gold-light) !important;
+    text-decoration: underline;
+}
+
+/* Accessibilité */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+.skip-link:focus {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    width: auto;
+    height: auto;
+    padding: 0.75rem 1rem;
+    background: #fff;
+    color: var(--vg-bordeaux-dark);
+    z-index: 2000;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+:focus-visible {
+    outline: 3px solid var(--vg-gold);
+    outline-offset: 2px;
+}
+
+/* Back-office */
+.sidebar-vite {
+    background: #fff;
+    border-radius: var(--vg-radius);
+    box-shadow: var(--vg-shadow);
+    position: sticky;
+    top: 1rem;
+}
+
+.sidebar-vite .nav-link {
+    color: var(--vg-ink) !important;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.95rem;
+}
+
+.sidebar-vite .nav-link.active,
+.sidebar-vite .nav-link:hover {
+    background: var(--vg-cream);
+    color: var(--vg-bordeaux) !important;
+    font-weight: 600;
+}
+
+.table-vite thead {
+    background: var(--vg-cream);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--vg-muted);
+}
+
+.table-vite thead th {
+    border-bottom: 2px solid var(--vg-cream-dark);
+    font-weight: 600;
+}
+
+/* Filtres catalogue */
+.filter-panel {
+    background: #fff;
+    border-radius: var(--vg-radius);
+    box-shadow: var(--vg-shadow);
+    border: 1px solid rgba(43, 33, 24, 0.06);
+}
+
+/* Fiche menu */
+.dish-card {
+    border: 1px solid #eadfce;
+    border-radius: var(--vg-radius);
+    background: #fff;
+    height: 100%;
+    overflow: hidden;
+}
+
+.dish-card__img {
+    height: 120px;
+    object-fit: cover;
+    width: 100%;
+}
+
+.order-sidebar {
+    top: 1rem;
+}
+
+.order-sidebar .list-group-item {
+    border-color: #eadfce;
+}
+
+/* Divers */
+.page-title {
+    color: var(--vg-bordeaux);
+    font-weight: 700;
+}
+
+.badge-theme {
+    background: var(--vg-bordeaux);
+    font-weight: 500;
+}
+
+.badge-diet {
+    background: var(--vg-success);
+    font-weight: 500;
+}
+
+.alert-conditions {
+    border-left: 4px solid var(--vg-gold);
+    background: #fff8e7;
+    border-radius: 0 var(--vg-radius) var(--vg-radius) 0;
+}
+
+.rating-stars {
+    color: var(--vg-gold);
+    letter-spacing: 0.1rem;
+}
+
+.stat-card {
+    border-left: 4px solid var(--vg-gold);
+}
+
+.review-card {
+    border-top: 3px solid var(--vg-gold);
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--vg-gold);
+    box-shadow: 0 0 0 0.2rem rgba(201, 162, 39, 0.25);
+}
+
+/* Responsive */
+@media (max-width: 991.98px) {
+    .sidebar-vite {
+        position: static;
+        margin-bottom: 1rem;
+    }
+
+    .order-sidebar {
+        position: static !important;
+    }
+
+    .hero-vite {
+        text-align: center;
+    }
+
+    .hero-vite .btn {
+        width: 100%;
+    }
+
+    .hero-restaurant {
+        min-height: auto;
+        padding: 3.5rem 0 2.5rem;
+        text-align: center;
+    }
+
+    .hero-restaurant__title {
+        max-width: none;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-restaurant__lead {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-restaurant .btn {
+        width: 100%;
+    }
+
+    .savoir-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .savoir-grid__photo--main {
+        grid-row: span 1;
+        min-height: 220px;
+    }
+
+    .menu-card__img,
+    .menu-card__placeholder {
+        height: 160px;
+    }
+
+    .menu-card__min {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+
+    .navbar-brand {
+        font-size: 1rem;
+    }
+}
+
+/* Pages auth / formulaires */
+.auth-page {
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+.auth-page--wide {
+    max-width: 720px;
+}
+
+.legal-page h1 {
+    font-size: 1.75rem;
+}
+
+.legal-page h2 {
+    font-size: 1.1rem;
+    color: var(--vg-bordeaux);
+    margin-top: 1.5rem;
+}
+
+.legal-page p,
+.legal-page li {
+    color: var(--vg-muted);
+}
+
+/* Compte client */
+.account-card {
+    transition: box-shadow 0.2s;
+    height: 100%;
+}
+
+.account-card:hover {
+    box-shadow: 0 12px 28px rgba(43, 33, 24, 0.1);
+}
+
+.account-card__icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    background: var(--vg-cream);
+    color: var(--vg-bordeaux);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+/* Timeline commande */
+.status-timeline {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.status-timeline__item {
+    position: relative;
+    padding-left: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-left: 3px solid var(--vg-cream-dark);
+}
+
+.status-timeline__item:last-child {
+    padding-bottom: 0;
+    border-left-color: transparent;
+}
+
+.status-timeline__item--active {
+    border-left-color: var(--vg-gold);
+}
+
+.status-timeline__date {
+    font-size: 0.8rem;
+    color: var(--vg-muted);
+}
+
+/* Badges statut */
+.badge-status {
+    font-weight: 500;
+    font-size: 0.75rem;
+}
+
+.badge-status--pending { background: #6c757d; }
+.badge-status--success { background: var(--vg-success); }
+.badge-status--warning { background: var(--vg-gold); color: var(--vg-bordeaux-dark); }
+.badge-status--danger { background: #a33; }
+
+/* Récap commande */
+.price-recap {
+    background: var(--vg-cream);
+    border-radius: var(--vg-radius);
+    border: 1px solid #eadfce;
+}
+
+.price-recap__total {
+    font-size: 1.25rem;
+    color: var(--vg-bordeaux);
+    border-top: 2px solid #eadfce;
+    padding-top: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+/* Back-office mobile */
+@media (max-width: 991.98px) {
+    .backoffice-sidebar-toggle {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}
+

@@ -1,0 +1,8 @@
+{{ form_start(form) }}
+<div class="row g-3">
+    <div class="col-md-6">{{ form_row(form.label) }}</div>
+    <div class="col-md-6">{{ form_row(form.slug) }}</div>
+</div>
+<button type="submit" class="btn btn-vite mt-3">Enregistrer</button>
+<a href="{{ path('app_employee_theme_index') }}" class="btn btn-outline-secondary mt-3">Retour</a>
+{{ form_end(form) }}

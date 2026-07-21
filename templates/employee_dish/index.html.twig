@@ -1,47 +1,36 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Dish index{% endblock %}
-
-{% block body %}
-    <h1>Dish index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Photo</th>
-                <th>Type</th>
-                <th>IsActive</th>
-                <th>CreatedAt</th>
-                <th>UpdatedAt</th>
-                <th>actions</th>
-            </tr>
-        </thead>
+{% extends 'layouts/backoffice.html.twig' %}
+{% block title %}Plats{% endblock %}
+{% block backoffice_body %}
+{% set typeLabels = {'ENTREE':'Entrée','PLAT':'Plat','DESSERT':'Dessert'} %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+        <h1 class="page-title mb-1">Plats</h1>
+        <p class="text-muted mb-0 small">Bibliothèque de plats réutilisables dans plusieurs menus.</p>
+    </div>
+    <a href="{{ path('app_employee_dish_new') }}" class="btn btn-vite">Nouveau plat</a>
+</div>
+<div class="table-responsive card card-vite">
+    <table class="table table-vite table-hover mb-0 align-middle">
+        <thead><tr><th>Nom</th><th>Type</th><th>Allergènes</th><th>Statut</th><th class="text-end">Actions</th></tr></thead>
         <tbody>
         {% for dish in dishes %}
             <tr>
-                <td>{{ dish.id }}</td>
-                <td>{{ dish.title }}</td>
-                <td>{{ dish.description }}</td>
-                <td>{{ dish.photo }}</td>
-                <td>{{ dish.type }}</td>
-                <td>{{ dish.isActive ? 'Yes' : 'No' }}</td>
-                <td>{{ dish.createdAt ? dish.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ dish.updatedAt ? dish.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_employee_dish_show', {'id': dish.id}) }}">show</a>
-                    <a href="{{ path('app_employee_dish_edit', {'id': dish.id}) }}">edit</a>
+                <td><strong>{{ dish.title }}</strong></td>
+                <td>{{ typeLabels[dish.type] ?? dish.type }}</td>
+                <td class="small">{% for a in dish.allergens %}{{ a.label }}{% if not loop.last %}, {% endif %}{% else %}-{% endfor %}</td>
+                <td>{% if dish.isActive %}<span class="badge bg-success">Actif</span>{% else %}<span class="badge bg-secondary">Inactif</span>{% endif %}</td>
+                <td class="text-end">
+                    <a href="{{ path('app_employee_dish_edit', { id: dish.id }) }}" class="btn btn-sm btn-outline-dark">Modifier</a>
+                    <form method="post" action="{{ path('app_employee_dish_delete', { id: dish.id }) }}" class="d-inline" onsubmit="return confirm('Supprimer ce plat ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ dish.id) }}">
+                        <button class="btn btn-sm btn-outline-danger">Supprimer</button>
+                    </form>
                 </td>
             </tr>
         {% else %}
-            <tr>
-                <td colspan="9">no records found</td>
-            </tr>
+            <tr><td colspan="5" class="text-center text-muted py-4">Aucun plat. Créez des entrées, plats et desserts avant de composer un menu.</td></tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_employee_dish_new') }}">Create new</a>
+</div>
 {% endblock %}

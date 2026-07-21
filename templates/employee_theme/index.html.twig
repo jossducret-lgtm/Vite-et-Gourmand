@@ -1,0 +1,36 @@
+{% extends 'layouts/backoffice.html.twig' %}
+{% block title %}Thèmes & événements{% endblock %}
+{% block backoffice_body %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+        <h1 class="page-title mb-1">Thèmes & événements</h1>
+        <p class="text-muted mb-0 small">Catégories du catalogue (Noël, Pâques, Mariage...). Chaque menu a un thème.</p>
+    </div>
+    <a href="{{ path('app_employee_theme_new') }}" class="btn btn-vite">Nouveau thème</a>
+</div>
+<div class="table-responsive card card-vite">
+    <table class="table table-vite table-hover mb-0 align-middle">
+        <thead><tr><th>Nom</th><th>Slug</th><th>Menus associés</th><th class="text-end">Actions</th></tr></thead>
+        <tbody>
+        {% for theme in themes %}
+            <tr>
+                <td><strong>{{ theme.label }}</strong></td>
+                <td><code>{{ theme.slug }}</code></td>
+                <td>{{ theme.menus|length }}</td>
+                <td class="text-end">
+                    <a href="{{ path('app_employee_theme_edit', { id: theme.id }) }}" class="btn btn-sm btn-outline-dark">Modifier</a>
+                    {% if theme.menus|length == 0 %}
+                        <form method="post" action="{{ path('app_employee_theme_delete', { id: theme.id }) }}" class="d-inline" onsubmit="return confirm('Supprimer ce thème ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ theme.id) }}">
+                            <button class="btn btn-sm btn-outline-danger">Supprimer</button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="4" class="text-center text-muted py-4">Aucun thème. Créez-en un avant de composer un menu.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

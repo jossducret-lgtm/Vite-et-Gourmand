@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+<div class="row g-4">
+    <aside class="col-lg-3">
+        <button class="btn btn-outline-dark d-lg-none backoffice-sidebar-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#backofficeSidebar" aria-expanded="false" aria-controls="backofficeSidebar">
+            Menu back-office
+        </button>
+        <div class="collapse d-lg-block" id="backofficeSidebar">
+            {% include 'partials/backoffice_sidebar.html.twig' %}
+        </div>
+    </aside>
+    <section class="col-lg-9">
+        {% block backoffice_body %}{% endblock %}
+    </section>
+</div>
+{% endblock %}

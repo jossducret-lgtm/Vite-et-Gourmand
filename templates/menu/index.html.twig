@@ -1,39 +1,113 @@
 {% extends 'base.html.twig' %}
-{% block title %}Tous les menus - Vite & Gourmand{% endblock %}
-{% block body %}
-<header class="mb-4"><h1 class="fw-bold">Tous les menus</h1><p class="text-muted mb-0">Recherchez rapidement un menu selon votre budget, le thème, le régime ou le nombre de personnes.</p></header>
-<section class="card shadow-sm mb-4"><div class="card-body">
-    <h2 class="h5 mb-3">Filtres de recherche</h2>
-    <form id="menuFilters" class="row g-3">
-        <div class="col-md-2"><label for="minPrice" class="form-label">Prix min</label><input id="minPrice" name="minPrice" type="number" min="0" class="form-control"></div>
-        <div class="col-md-2"><label for="maxPrice" class="form-label">Prix max</label><input id="maxPrice" name="maxPrice" type="number" min="0" class="form-control"></div>
-        <div class="col-md-2"><label for="minPeople" class="form-label">Personnes min</label><input id="minPeople" name="minPeople" type="number" min="1" class="form-control"></div>
-        <div class="col-md-3"><label for="theme" class="form-label">Thème</label><select id="theme" name="theme" class="form-select"><option value="">Tous les thèmes</option>{% for theme in themes %}<option value="{{ theme.id }}">{{ theme.label }}</option>{% endfor %}</select></div>
-        <div class="col-md-3"><label for="diet" class="form-label">Régime</label><select id="diet" name="diet" class="form-select"><option value="">Tous les régimes</option>{% for diet in diets %}<option value="{{ diet.id }}">{{ diet.label }}</option>{% endfor %}</select></div>
-    </form>
-</div></section>
-<div id="loadingMessage" class="alert alert-info d-none">Recherche en cours...</div>
-<section id="menuResults" aria-live="polite">{% include 'menu/_cards.html.twig' with { menus: menus } %}</section>
+{% block title %}Nos menus - Vite & Gourmand{% endblock %}
+{% block main_class %}pb-4 pb-md-5{% endblock %}
+{% block container_class %}container pt-2{% endblock %}
+
+{% block main_before %}
+<header class="page-banner page-banner--menus">
+    <div class="page-banner__overlay"></div>
+    <div class="container page-banner__content">
+        <h1 class="page-banner__title">Nos menus</h1>
+        <p class="page-banner__lead">Entrée, plat, dessert. Livraison sur Bordeaux.</p>
+    </div>
+</header>
 {% endblock %}
+
+{% block body %}
+<section class="mb-3">
+    <p class="mb-2 fw-semibold">Filtrer par thème :</p>
+    <div class="theme-chips">
+        <button type="button" class="theme-chip theme-chip--active" data-theme="">Tous</button>
+        {% for theme in themes %}
+            <button type="button" class="theme-chip" data-theme="{{ theme.id }}">{{ theme.label }}</button>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="filter-panel p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h6 mb-0">Autres filtres</h2>
+        <button type="button" id="resetFilters" class="btn btn-sm btn-outline-vite">Effacer</button>
+    </div>
+    <form id="menuFilters" class="row g-3">
+        <div class="col-6 col-md-3">
+            <label for="minPrice" class="form-label">Prix min (€/pers.)</label>
+            <input id="minPrice" name="minPrice" type="number" min="0" step="0.5" class="form-control">
+        </div>
+        <div class="col-6 col-md-3">
+            <label for="maxPrice" class="form-label">Prix max (€/pers.)</label>
+            <input id="maxPrice" name="maxPrice" type="number" min="0" step="0.5" class="form-control">
+        </div>
+        <div class="col-6 col-md-2">
+            <label for="minPeople" class="form-label">Nb pers. min.</label>
+            <input id="minPeople" name="minPeople" type="number" min="1" class="form-control">
+        </div>
+        <div class="col-6 col-md-2">
+            <label for="theme" class="form-label visually-hidden">Thème</label>
+            <select id="theme" name="theme" class="form-select">
+                <option value="">Tous</option>
+                {% for theme in themes %}<option value="{{ theme.id }}">{{ theme.label }}</option>{% endfor %}
+            </select>
+        </div>
+        <div class="col-12 col-md-2">
+            <label for="diet" class="form-label">Régime</label>
+            <select id="diet" name="diet" class="form-select">
+                <option value="">Tous</option>
+                {% for diet in diets %}<option value="{{ diet.id }}">{{ diet.label }}</option>{% endfor %}
+            </select>
+        </div>
+    </form>
+</section>
+
+<div id="loadingMessage" class="catalog-loading d-none">Chargement...</div>
+<div id="menuResults">{% include 'menu/_cards.html.twig' with { menus: menus } %}</div>
+{% endblock %}
+
 {% block javascripts %}
 <script>
+// ajax filtres menus
 const filterForm = document.querySelector('#menuFilters');
 const resultsContainer = document.querySelector('#menuResults');
 const loadingMessage = document.querySelector('#loadingMessage');
+const themeSelect = document.querySelector('#theme');
+const themeChips = document.querySelectorAll('.theme-chip');
+const resetButton = document.querySelector('#resetFilters');
 let timeout = null;
+
+function syncThemeChips() {
+    themeChips.forEach(chip => {
+        chip.classList.toggle('theme-chip--active', chip.dataset.theme === themeSelect.value);
+    });
+}
+
 function refreshMenus() {
     clearTimeout(timeout);
     timeout = setTimeout(() => {
-        const params = new URLSearchParams(new FormData(filterForm));
         loadingMessage.classList.remove('d-none');
-        fetch('{{ path('app_menu_filter') }}?' + params.toString(), {method: 'GET', headers: {'X-Requested-With': 'XMLHttpRequest'}})
-            .then(response => { if (!response.ok) { throw new Error('Erreur'); } return response.text(); })
+        const params = new URLSearchParams(new FormData(filterForm));
+        fetch('{{ path('app_menu_filter') }}?' + params.toString(), { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(r => r.text())
             .then(html => { resultsContainer.innerHTML = html; })
-            .catch(() => { resultsContainer.innerHTML = '<div class="alert alert-danger">Impossible de charger les menus. Veuillez réessayer.</div>'; })
+            .catch(() => { resultsContainer.innerHTML = '<p class="text-danger">Erreur.</p>'; })
             .finally(() => loadingMessage.classList.add('d-none'));
     }, 300);
 }
+
+themeChips.forEach(chip => chip.addEventListener('click', () => {
+    themeSelect.value = chip.dataset.theme;
+    syncThemeChips();
+    refreshMenus();
+}));
+
+themeSelect.addEventListener('change', () => { syncThemeChips(); refreshMenus(); });
+resetButton.addEventListener('click', () => { filterForm.reset(); syncThemeChips(); refreshMenus(); });
 filterForm.addEventListener('input', refreshMenus);
-filterForm.addEventListener('change', refreshMenus);
+
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('theme')) {
+    themeSelect.value = urlParams.get('theme');
+    syncThemeChips();
+    refreshMenus();
+}
 </script>
 {% endblock %}

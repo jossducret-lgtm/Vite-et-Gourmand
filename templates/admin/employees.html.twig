@@ -1,0 +1,32 @@
+{% extends 'layouts/backoffice.html.twig' %}
+{% block title %}Employés{% endblock %}
+{% block backoffice_body %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+        <h1 class="page-title mb-1">Comptes employés</h1>
+        <p class="text-muted small mb-0">Création et activation des accès back-office.</p>
+    </div>
+    <a href="{{ path('app_admin_employee_new') }}" class="btn btn-vite">Créer un employé</a>
+</div>
+<div class="table-responsive card card-vite">
+    <table class="table table-vite table-hover mb-0 align-middle">
+        <thead><tr><th>Email</th><th>Statut</th><th class="text-end">Actions</th></tr></thead>
+        <tbody>
+        {% for employee in employees %}
+            <tr>
+                <td>{{ employee.email }}</td>
+                <td>{% if employee.isActive %}<span class="badge bg-success">Actif</span>{% else %}<span class="badge bg-danger">Désactivé</span>{% endif %}</td>
+                <td class="text-end">
+                    <form method="post" action="{{ path('app_admin_employee_toggle', { id: employee.id }) }}" class="d-inline">
+                        <input type="hidden" name="_token" value="{{ csrf_token('toggle_employee_' ~ employee.id) }}">
+                        <button class="btn btn-sm btn-outline-dark">{% if employee.isActive %}Désactiver{% else %}Réactiver{% endif %}</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="3" class="text-center text-muted py-4">Aucun employé enregistré.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

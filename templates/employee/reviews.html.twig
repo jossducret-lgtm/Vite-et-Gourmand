@@ -1,6 +1,24 @@
-{% extends 'base.html.twig' %}
-{% block title %}Avis clients{% endblock %}
-{% block body %}
-<h1 class="fw-bold mb-4">Avis à modérer</h1>
-<div class="row g-3">{% for review in reviews %}<div class="col-md-6"><div class="card shadow-sm"><div class="card-body"><div class="mb-2">{% for i in 1..review.rating %}⭐{% endfor %}</div><p>{{ review.comment }}</p><small class="text-muted">{{ review.user.firstName }} {{ review.user.lastName }}</small><form method="post" action="{{ path('app_employee_review_moderate', { id: review.id }) }}" class="d-flex gap-2 mt-3"><input type="hidden" name="_token" value="{{ csrf_token('moderate_review_' ~ review.id) }}"><button name="action" value="validate" class="btn btn-success btn-sm">Valider</button><button name="action" value="refuse" class="btn btn-danger btn-sm">Refuser</button></form></div></div></div>{% else %}<div class="alert alert-info">Aucun avis en attente.</div>{% endfor %}</div>
+{% extends 'layouts/backoffice.html.twig' %}
+{% block title %}Modération avis{% endblock %}
+{% block backoffice_body %}
+<h1 class="page-title mb-1">Avis à modérer</h1>
+<p class="text-muted mb-4">Validez les avis clients avant publication sur l'accueil.</p>
+{% for review in reviews %}
+    <div class="card card-vite mb-3">
+        <div class="card-body p-4">
+            <p class="rating-stars mb-2" aria-label="Note {{ review.rating }} sur 5">{% for i in 1..5 %}{% if i <= review.rating %}★{% else %}☆{% endif %}{% endfor %}</p>
+            <p class="mb-3">« {{ review.comment }} »</p>
+            <p class="small text-muted mb-3">{{ review.user.firstName }} {{ review.user.lastName }}, commande {{ review.menuOrder.orderNumber }} ({{ review.menuOrder.menu.title }})</p>
+            <form method="post" action="{{ path('app_employee_review_moderate', { id: review.id }) }}" class="d-flex flex-wrap gap-2">
+                <input type="hidden" name="_token" value="{{ csrf_token('moderate_review_' ~ review.id) }}">
+                <button name="action" value="validate" class="btn btn-sm btn-success">Publier sur l'accueil</button>
+                <button name="action" value="refuse" class="btn btn-sm btn-outline-danger">Refuser</button>
+            </form>
+        </div>
+    </div>
+{% else %}
+    <div class="card card-vite text-center p-5">
+        <p class="text-muted mb-0">Aucun avis en attente de modération.</p>
+    </div>
+{% endfor %}
 {% endblock %}

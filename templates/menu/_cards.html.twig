@@ -1,27 +1,46 @@
+{# partial utilisé sur /menus et l'accueil #}
 {% if menus is empty %}
-    <div class="alert alert-warning">Aucun menu ne correspond à votre recherche.</div>
+    <div class="catalog-empty text-center py-5 px-3">
+        <p class="catalog-empty__title mb-2">Aucun menu trouvé</p>
+        <p class="text-muted mb-0">Changez les filtres ou <a href="{{ path('app_contact') }}">contactez-nous</a>.</p>
+    </div>
 {% else %}
+    <p class="catalog-count">{{ menus|length }} menu{{ menus|length > 1 ? 's' : '' }}</p>
     <div class="row g-4">
         {% for menu in menus %}
             {% set firstImage = menu.images|first %}
-            <div class="col-md-6 col-lg-4"><article class="card h-100 shadow-sm">
-                {% if firstImage %}
-                    <img src="{{ asset('uploads/menus/' ~ firstImage.filename) }}" class="card-img-top" alt="{{ firstImage.altText ?: menu.title }}">
-                {% else %}
-                    <div class="bg-secondary-subtle d-flex align-items-center justify-content-center" style="height: 180px;"><span class="text-muted">Image du menu</span></div>
-                {% endif %}
-                <div class="card-body d-flex flex-column">
-                    <div class="mb-2"><span class="badge bg-dark">{{ menu.theme.label }}</span> <span class="badge bg-success">{{ menu.diet.label }}</span></div>
-                    <h2 class="h5">{{ menu.title }}</h2>
-                    <p class="text-muted">{{ menu.description|length > 130 ? menu.description|slice(0, 130) ~ '…' : menu.description }}</p>
-                    <ul class="list-unstyled small">
-                        <li><strong>Minimum :</strong> {{ menu.minPeople }} personnes</li>
-                        <li><strong>Prix :</strong> {{ menu.pricePerPerson|number_format(2, ',', ' ') }} € / personne</li>
-                        <li><strong>Stock disponible :</strong> {{ menu.stockQuantity }}</li>
-                    </ul>
-                    <a href="{{ path('app_menu_show', { slug: menu.slug }) }}" class="btn btn-warning mt-auto">Voir le détail</a>
-                </div>
-            </article></div>
+            <div class="col-sm-6 col-lg-4">
+                <article class="card card-vite menu-card menu-card--restaurant h-100">
+                    <div class="menu-card__media">
+                        {% if firstImage %}
+                            <img src="{{ asset('uploads/' ~ firstImage.filename) }}" class="menu-card__img" alt="{{ firstImage.altText ?: menu.title }}" loading="lazy">
+                        {% else %}
+                            <div class="menu-card__placeholder">
+                                <span>Pas de photo</span>
+                            </div>
+                        {% endif %}
+                        <span class="menu-card__ribbon">{{ menu.theme.label }}</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <div class="menu-card__meta mb-2">
+                            <span class="badge badge-diet">{{ menu.diet.label }}</span>
+                            {% if menu.dish|length > 0 %}
+                                <span class="menu-card__courses">{{ menu.dish|length }} plats</span>
+                            {% endif %}
+                        </div>
+                        <h2 class="menu-card__title">{{ menu.title }}</h2>
+                        <p class="menu-card__desc flex-grow-1">{{ menu.description|length > 110 ? menu.description|slice(0, 110) ~ '...' : menu.description }}</p>
+                        <div class="menu-card__footer">
+                            <div class="menu-card__pricing">
+                                <span class="menu-card__price">{{ menu.pricePerPerson|number_format(2, ',', ' ') }} €</span>
+                                <span class="menu-card__price-unit">/ pers.</span>
+                                <span class="menu-card__min">min. {{ menu.minPeople }} pers.</span>
+                            </div>
+                            <a href="{{ path('app_menu_show', { slug: menu.slug }) }}" class="btn btn-vite w-100">Voir le menu</a>
+                        </div>
+                    </div>
+                </article>
+            </div>
         {% endfor %}
     </div>
 {% endif %}

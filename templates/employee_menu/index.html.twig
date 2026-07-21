@@ -1,53 +1,37 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Menu index{% endblock %}
-
-{% block body %}
-    <h1>Menu index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Slug</th>
-                <th>Description</th>
-                <th>ConditionsText</th>
-                <th>MinPeople</th>
-                <th>PricePerPerson</th>
-                <th>StockQuantity</th>
-                <th>IsActive</th>
-                <th>CreatedAt</th>
-                <th>UpdatedAt</th>
-                <th>actions</th>
-            </tr>
-        </thead>
+{% extends 'layouts/backoffice.html.twig' %}
+{% block title %}Menus{% endblock %}
+{% block backoffice_body %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+        <h1 class="page-title mb-1">Menus</h1>
+        <p class="text-muted mb-0 small">Assemblez des plats existants par thème et publiez sur le site.</p>
+    </div>
+    <a href="{{ path('app_employee_menu_new') }}" class="btn btn-vite">Nouveau menu</a>
+</div>
+<div class="table-responsive card card-vite">
+    <table class="table table-vite table-hover mb-0 align-middle">
+        <thead><tr><th>Titre</th><th>Thème</th><th>Plats</th><th>Stock</th><th>Statut</th><th class="text-end">Actions</th></tr></thead>
         <tbody>
         {% for menu in menus %}
             <tr>
-                <td>{{ menu.id }}</td>
-                <td>{{ menu.title }}</td>
-                <td>{{ menu.slug }}</td>
-                <td>{{ menu.description }}</td>
-                <td>{{ menu.conditionsText }}</td>
-                <td>{{ menu.minPeople }}</td>
-                <td>{{ menu.pricePerPerson }}</td>
+                <td><strong>{{ menu.title }}</strong></td>
+                <td><span class="badge badge-theme">{{ menu.theme.label }}</span></td>
+                <td>{{ menu.dish|length }}</td>
                 <td>{{ menu.stockQuantity }}</td>
-                <td>{{ menu.isActive ? 'Yes' : 'No' }}</td>
-                <td>{{ menu.createdAt ? menu.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ menu.updatedAt ? menu.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_employee_menu_show', {'id': menu.id}) }}">show</a>
-                    <a href="{{ path('app_employee_menu_edit', {'id': menu.id}) }}">edit</a>
+                <td>{% if menu.isActive %}<span class="badge bg-success">Publié</span>{% else %}<span class="badge bg-secondary">Brouillon</span>{% endif %}</td>
+                <td class="text-end">
+                    <a href="{{ path('app_menu_show', { slug: menu.slug }) }}" class="btn btn-sm btn-outline-secondary" target="_blank" rel="noopener">Voir</a>
+                    <a href="{{ path('app_employee_menu_edit', { id: menu.id }) }}" class="btn btn-sm btn-outline-dark">Modifier</a>
+                    <form method="post" action="{{ path('app_employee_menu_delete', { id: menu.id }) }}" class="d-inline" onsubmit="return confirm('Supprimer ce menu ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ menu.id) }}">
+                        <button class="btn btn-sm btn-outline-danger">Supprimer</button>
+                    </form>
                 </td>
             </tr>
         {% else %}
-            <tr>
-                <td colspan="12">no records found</td>
-            </tr>
+            <tr><td colspan="6" class="text-center text-muted py-4">Aucun menu. Commencez par créer des <a href="{{ path('app_employee_theme_index') }}">thèmes</a> et des <a href="{{ path('app_employee_dish_index') }}">plats</a>.</td></tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_employee_menu_new') }}">Create new</a>
+</div>
 {% endblock %}

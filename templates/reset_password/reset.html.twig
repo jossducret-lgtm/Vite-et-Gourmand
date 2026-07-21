@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+{% block title %}Nouveau mot de passe{% endblock %}
+{% block body %}
+<div class="auth-page">
+    <div class="card card-vite">
+        <div class="card-body p-4 p-md-5">
+            <h1 class="page-title h3 mb-4">Choisissez un nouveau mot de passe</h1>
+            {{ form_start(resetForm) }}
+            {{ form_row(resetForm.plainPassword) }}
+            <button class="btn btn-vite w-100 mt-2">Enregistrer</button>
+            {{ form_end(resetForm) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

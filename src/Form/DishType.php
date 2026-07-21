@@ -2,35 +2,54 @@
 
 namespace App\Form;
 
+use App\Entity\Allergen;
 use App\Entity\Dish;
-use App\Entity\Menu;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
-class DishType extends AbstractType
+final class DishType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title')
-            ->add('description')
-            ->add('photo')
-            ->add('type')
-            ->add('isActive')
-            ->add('createdAt', null, [
-                'widget' => 'single_text'
+            ->add('title', TextType::class, ['label' => 'Nom du plat'])
+            ->add('description', TextareaType::class, ['label' => 'Description', 'required' => false])
+            ->add('type', ChoiceType::class, [
+                'label' => 'Type',
+                'choices' => [
+                    'Entrée' => 'ENTREE',
+                    'Plat' => 'PLAT',
+                    'Dessert' => 'DESSERT',
+                ],
             ])
-            ->add('updatedAt', null, [
-                'widget' => 'single_text'
+            ->add('photoFile', FileType::class, [
+                'label' => 'Photo',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File(maxSize: '2M', mimeTypes: ['image/jpeg', 'image/png', 'image/webp']),
+                ],
             ])
-            ->add('menus', EntityType::class, [
-                'class' => Menu::class,
-                'choice_label' => 'id',
+            ->add('allergens', EntityType::class, [
+                'class' => Allergen::class,
+                'choice_label' => 'label',
                 'multiple' => true,
+                'expanded' => true,
+                'label' => 'Allergènes',
+                'required' => false,
             ])
-        ;
+            ->add('isActive', CheckboxType::class, [
+                'label' => 'Plat actif',
+                'required' => false,
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

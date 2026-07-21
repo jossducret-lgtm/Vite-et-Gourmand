@@ -1,0 +1,68 @@
+{% extends 'layouts/backoffice.html.twig' %}
+{% block title %}Statistiques{% endblock %}
+{% block backoffice_body %}
+<h1 class="page-title mb-4">Statistiques des commandes (MongoDB)</h1>
+{% if not mongoAvailable %}
+<div class="alert alert-danger">
+    <strong>MongoDB obligatoire (ECF)</strong>, non accessible sur <code>127.0.0.1:27017</code>.
+    <hr class="my-2">
+    <p class="mb-2"><strong>Option 1 : portable (sans Docker)</strong></p>
+    <pre class="bg-dark text-white p-2 rounded small mb-3">powershell -ExecutionPolicy Bypass -File scripts/start-mongodb.ps1
+php bin/console app:mongo:sync-orders</pre>
+    <p class="mb-2"><strong>Option 2 : installateur Windows (admin)</strong></p>
+    <pre class="bg-dark text-white p-2 rounded small mb-3">winget install MongoDB.Server</pre>
+    <p class="mb-0"><strong>Option 3 : MongoDB Atlas (gratuit)</strong> : créez un cluster sur
+    <a href="https://www.mongodb.com/cloud/atlas" target="_blank" rel="noopener">mongodb.com/atlas</a>,
+    puis mettez l'URL dans <code>MONGODB_URL</code> (fichier <code>.env</code>).</p>
+</div>
+{% elseif stats is empty %}
+<div class="alert alert-warning">
+    MongoDB est connecté mais aucune statistique n'est disponible. Lancez :
+    <code>php bin/console app:mongo:sync-orders</code>
+</div>
+{% else %}
+<div class="alert alert-success py-2">
+    Données lues depuis <strong>MongoDB</strong> (sans Docker).
+</div>
+{% endif %}
+<form method="get" class="card card-vite card-body mb-4 mt-3">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-3"><label class="form-label" for="dateStart">Date début</label><input type="date" id="dateStart" name="dateStart" value="{{ filters.dateStart }}" class="form-control"></div>
+        <div class="col-md-3"><label class="form-label" for="dateEnd">Date fin</label><input type="date" id="dateEnd" name="dateEnd" value="{{ filters.dateEnd }}" class="form-control"></div>
+        <div class="col-md-3"><button class="btn btn-vite w-100">Filtrer</button></div>
+    </div>
+</form>
+<div class="row g-4">
+    <div class="col-lg-7"><div class="card card-vite"><div class="card-body"><canvas id="ordersChart" aria-label="Graphique du nombre de commandes par menu"></canvas></div></div></div>
+    <div class="col-lg-5"><div class="card card-vite"><div class="card-body">
+        <h2 class="h5">Chiffre d'affaires par menu</h2>
+        <div class="table-responsive"><table class="table table-vite table-sm mb-0"><thead><tr><th>Menu</th><th>Commandes</th><th>CA</th></tr></thead><tbody>
+        {% for row in stats %}
+            <tr><td>{{ row.menuTitle }}</td><td>{{ row.ordersCount }}</td><td>{{ row.revenue|number_format(2, ',', ' ') }} €</td></tr>
+        {% else %}
+            <tr><td colspan="3" class="text-muted">Aucune donnée MongoDB pour le moment.</td></tr>
+        {% endfor %}
+        </tbody></table></div>
+    </div></div></div>
+</div>
+{% endblock %}
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+const stats = {{ stats|json_encode|raw }};
+if (stats.length) {
+    new Chart(document.getElementById('ordersChart'), {
+        type: 'bar',
+        data: {
+            labels: stats.map(s => s.menuTitle),
+            datasets: [{
+                label: 'Nombre de commandes',
+                data: stats.map(s => s.ordersCount),
+                backgroundColor: '#6b1f2a'
+            }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+    });
+}
+</script>
+{% endblock %}

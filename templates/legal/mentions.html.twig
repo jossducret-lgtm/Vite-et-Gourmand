@@ -1,5 +1,24 @@
 {% extends 'base.html.twig' %}
 {% block title %}Mentions légales{% endblock %}
 {% block body %}
-<div class="card shadow-sm"><div class="card-body p-4"><h1>Mentions légales</h1><p>Site édité dans le cadre du projet ECF Vite & Gourmand.</p><p>Responsables : Julie et José - Bordeaux.</p><p>Contact : contact@vitegourmand.fr</p></div></div>
+<div class="legal-page">
+    <h1 class="page-title mb-4">Mentions légales</h1>
+    <div class="card card-vite">
+        <div class="card-body p-4 p-md-5">
+            <h2>Éditeur du site</h2>
+            <p><strong>Vite &amp; Gourmand</strong>, traiteur<br>
+            12 Quai des Chartrons, 33000 Bordeaux<br>
+            Email : <a href="mailto:contact@vitegourmand.fr">contact@vitegourmand.fr</a><br>
+            Tél. : 06 01 02 03 04</p>
+            <p>Responsables de publication : Julie Dupont et José Martin.</p>
+
+            <h2>Hébergement</h2>
+            <p>Site développé dans le cadre du projet ECF « Développeur Web et Web Mobile ».<br>
+            Hébergeur de production : à préciser selon déploiement (Railway, Render, etc.).</p>
+
+            <h2>Propriété intellectuelle</h2>
+            <p>L'ensemble des contenus (textes, images, logo) est la propriété de Vite &amp; Gourmand. Toute reproduction sans autorisation est interdite.</p>
+        </div>
+    </div>
+</div>
 {% endblock %}

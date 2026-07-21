@@ -1,0 +1,41 @@
+{% extends 'layouts/backoffice.html.twig' %}
+{% block title %}Messages contact{% endblock %}
+{% block backoffice_body %}
+<h1 class="page-title mb-1">Messages de contact</h1>
+<p class="text-muted mb-4">Demandes reçues depuis le formulaire du site.</p>
+<div class="table-responsive card card-vite d-none d-lg-block">
+    <table class="table table-vite mb-0 align-middle">
+        <thead><tr><th>Date</th><th>Contact</th><th>Message</th><th>Statut</th><th></th></tr></thead>
+        <tbody>
+        {% for message in messages %}
+            <tr>
+                <td class="small">{{ message.createdAt|date('d/m/Y H:i') }}</td>
+                <td>{{ message.email }}</td>
+                <td><strong>{{ message.title }}</strong><br><span class="small text-muted">{{ message.message|slice(0, 100) }}{% if message.message|length > 100 %}...{% endif %}</span></td>
+                <td>{% if message.isProcessed %}<span class="badge bg-success">Traité</span>{% else %}<span class="badge badge-status badge-status--warning">En attente</span>{% endif %}</td>
+                <td>{% if not message.isProcessed %}<form method="post" action="{{ path('app_admin_message_process', { id: message.id }) }}"><input type="hidden" name="_token" value="{{ csrf_token('process_message_' ~ message.id) }}"><button class="btn btn-sm btn-vite">Marquer traité</button></form>{% endif %}</td>
+            </tr>
+        {% else %}
+            <tr><td colspan="5" class="text-center text-muted py-4">Aucun message.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="d-lg-none">
+    {% for message in messages %}
+        <div class="card card-vite mb-3"><div class="card-body">
+            <div class="d-flex justify-content-between mb-2">
+                <strong>{{ message.title }}</strong>
+                {% if message.isProcessed %}<span class="badge bg-success">Traité</span>{% else %}<span class="badge badge-status badge-status--warning">En attente</span>{% endif %}
+            </div>
+            <p class="small text-muted mb-2">{{ message.email }}, {{ message.createdAt|date('d/m/Y H:i') }}</p>
+            <p class="small mb-3">{{ message.message }}</p>
+            {% if not message.isProcessed %}
+                <form method="post" action="{{ path('app_admin_message_process', { id: message.id }) }}"><input type="hidden" name="_token" value="{{ csrf_token('process_message_' ~ message.id) }}"><button class="btn btn-sm btn-vite w-100">Marquer traité</button></form>
+            {% endif %}
+        </div></div>
+    {% else %}
+        <div class="alert alert-light border">Aucun message.</div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,11 +1,6 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}New Menu{% endblock %}
-
-{% block body %}
-    <h1>Create new Menu</h1>
-
-    {{ include('employee_menu/_form.html.twig') }}
-
-    <a href="{{ path('app_employee_menu_index') }}">back to list</a>
+{% extends 'layouts/backoffice.html.twig' %}
+{% block title %}Nouveau menu{% endblock %}
+{% block backoffice_body %}
+<h1 class="page-title mb-4">Nouveau menu</h1>
+<div class="card card-vite"><div class="card-body p-4">{{ include('employee_menu/_form.html.twig', { menu: menu }) }}</div></div>
 {% endblock %}

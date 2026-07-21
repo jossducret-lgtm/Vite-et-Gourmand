@@ -1,5 +1,30 @@
 {% extends 'base.html.twig' %}
 {% block title %}Modifier mon profil{% endblock %}
 {% block body %}
-<div class="row justify-content-center"><div class="col-lg-7"><div class="card shadow-sm"><div class="card-body p-4"><h1 class="h3">Modifier mon profil</h1>{{ form_start(form) }}{{ form_widget(form) }}<button class="btn btn-warning w-100">Enregistrer</button>{{ form_end(form) }}</div></div></div></div>
+<nav aria-label="Fil d'Ariane" class="mb-3">
+    <ol class="breadcrumb small mb-0">
+        <li class="breadcrumb-item"><a href="{{ path('app_account') }}">Mon compte</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Profil</li>
+    </ol>
+</nav>
+<div class="auth-page auth-page--wide">
+    <div class="card card-vite">
+        <div class="card-body p-4 p-md-5">
+            <h1 class="page-title h3 mb-4">Modifier mon profil</h1>
+            {{ form_start(form) }}
+            <div class="row g-3">
+                <div class="col-md-6">{{ form_row(form.firstName) }}</div>
+                <div class="col-md-6">{{ form_row(form.lastName) }}</div>
+                <div class="col-md-6">{{ form_row(form.phone) }}</div>
+                <div class="col-12">{{ form_row(form.address) }}</div>
+                <div class="col-md-4">{{ form_row(form.postalCode) }}</div>
+                <div class="col-md-4">{{ form_row(form.city) }}</div>
+                <div class="col-md-4">{{ form_row(form.country) }}</div>
+            </div>
+            <button class="btn btn-vite w-100 mt-3">Enregistrer</button>
+            <a href="{{ path('app_account') }}" class="btn btn-outline-secondary w-100 mt-2">Annuler</a>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
 {% endblock %}

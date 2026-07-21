@@ -1,11 +1,6 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}New OpeningHour{% endblock %}
-
-{% block body %}
-    <h1>Create new OpeningHour</h1>
-
-    {{ include('employee_opening_hour/_form.html.twig') }}
-
-    <a href="{{ path('app_employee_opening_hour_index') }}">back to list</a>
+{% extends 'layouts/backoffice.html.twig' %}
+{% block title %}Nouvel horaire{% endblock %}
+{% block backoffice_body %}
+<h1 class="page-title mb-4">Ajouter un horaire</h1>
+<div class="card card-vite"><div class="card-body p-4">{% include 'employee_opening_hour/_form.html.twig' %}</div></div>
 {% endblock %}

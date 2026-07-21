@@ -1,41 +1,29 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}OpeningHour index{% endblock %}
-
-{% block body %}
-    <h1>OpeningHour index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>DayOfWeek</th>
-                <th>OpeningTime</th>
-                <th>ClosingTime</th>
-                <th>IsClosed</th>
-                <th>actions</th>
-            </tr>
-        </thead>
+{% extends 'layouts/backoffice.html.twig' %}
+{% block title %}Horaires{% endblock %}
+{% block backoffice_body %}
+{% set dayLabels = {'LUNDI':'Lundi','MARDI':'Mardi','MERCREDI':'Mercredi','JEUDI':'Jeudi','VENDREDI':'Vendredi','SAMEDI':'Samedi','DIMANCHE':'Dimanche'} %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+        <h1 class="page-title mb-1">Horaires d'ouverture</h1>
+        <p class="text-muted small mb-0">Affichés dans le pied de page du site.</p>
+    </div>
+    <a href="{{ path('app_employee_opening_hour_new') }}" class="btn btn-vite">Ajouter un créneau</a>
+</div>
+<div class="table-responsive card card-vite">
+    <table class="table table-vite table-hover mb-0 align-middle">
+        <thead><tr><th>Jour</th><th>Ouverture</th><th>Fermeture</th><th class="text-end">Actions</th></tr></thead>
         <tbody>
-        {% for opening_hour in opening_hours %}
+        {% for hour in opening_hours %}
             <tr>
-                <td>{{ opening_hour.id }}</td>
-                <td>{{ opening_hour.dayOfWeek }}</td>
-                <td>{{ opening_hour.openingTime ? opening_hour.openingTime|date('H:i:s') : '' }}</td>
-                <td>{{ opening_hour.closingTime ? opening_hour.closingTime|date('H:i:s') : '' }}</td>
-                <td>{{ opening_hour.isClosed ? 'Yes' : 'No' }}</td>
-                <td>
-                    <a href="{{ path('app_employee_opening_hour_show', {'id': opening_hour.id}) }}">show</a>
-                    <a href="{{ path('app_employee_opening_hour_edit', {'id': opening_hour.id}) }}">edit</a>
-                </td>
+                <td><strong>{{ dayLabels[hour.dayOfWeek] ?? hour.dayOfWeek }}</strong></td>
+                <td>{% if hour.isClosed %}<span class="text-muted">Fermé</span>{% else %}{{ hour.openingTime ? hour.openingTime|date('H\\hi') : '-' }}{% endif %}</td>
+                <td>{% if hour.isClosed %}-{% else %}{{ hour.closingTime ? hour.closingTime|date('H\\hi') : '-' }}{% endif %}</td>
+                <td class="text-end"><a href="{{ path('app_employee_opening_hour_edit', { id: hour.id }) }}" class="btn btn-sm btn-outline-dark">Modifier</a></td>
             </tr>
         {% else %}
-            <tr>
-                <td colspan="6">no records found</td>
-            </tr>
+            <tr><td colspan="4" class="text-center text-muted py-4">Aucun horaire configuré.</td></tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_employee_opening_hour_new') }}">Create new</a>
+</div>
 {% endblock %}

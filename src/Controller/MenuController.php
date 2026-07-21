@@ -29,6 +29,7 @@ final class MenuController extends AbstractController
         ]);
     }
 
+    // appelé en ajax quand on change les filtres
     #[Route('/filter', name: 'app_menu_filter', methods: ['GET'])]
     public function filter(Request $request, MenuRepository $menuRepository): Response
     {
@@ -40,7 +41,7 @@ final class MenuController extends AbstractController
     #[Route('/{slug}', name: 'app_menu_show', methods: ['GET'])]
     public function show(string $slug, MenuRepository $menuRepository): Response
     {
-        $menu = $menuRepository->findOneBy(['slug' => $slug, 'isActive' => true]);
+        $menu = $menuRepository->findActiveBySlug($slug);
 
         if (!$menu) {
             throw $this->createNotFoundException('Menu introuvable.');
@@ -49,6 +50,7 @@ final class MenuController extends AbstractController
         return $this->render('menu/show.html.twig', ['menu' => $menu]);
     }
 
+    // paramètres GET du formulaire de filtres
     private function getFilters(Request $request): array
     {
         return [

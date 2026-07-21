@@ -1,37 +1,137 @@
 {% extends 'base.html.twig' %}
 {% block title %}Accueil - Vite & Gourmand{% endblock %}
-{% block body %}
-<section class="bg-white rounded-4 shadow-sm p-4 p-lg-5 mb-4">
-    <div class="row align-items-center g-4">
-        <div class="col-lg-7">
-            <span class="badge bg-warning text-dark mb-3">Traiteur à Bordeaux depuis 25 ans</span>
-            <h1 class="display-5 fw-bold">Des menus gourmands pour vos événements</h1>
-            <p class="lead">Vite & Gourmand accompagne les particuliers et professionnels avec des menus de saison pour Noël, Pâques, les repas familiaux et les événements.</p>
-            <p>Consultez les menus disponibles, visualisez les conditions et commandez directement en ligne.</p>
-            <a href="{{ path('app_menu_index') }}" class="btn btn-warning btn-lg">Découvrir les menus</a>
+{% block main_class %}{% endblock %}
+{% block container_class %}container py-4 py-md-5{% endblock %}
+
+{# hero avec photo en fond #}
+{% block main_before %}
+<section class="hero-restaurant" aria-labelledby="hero-title">
+    <div class="hero-restaurant__overlay"></div>
+    <div class="container hero-restaurant__content">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7">
+                <p class="hero-restaurant__meta">Traiteur à Bordeaux, Quai des Chartrons</p>
+                <h1 id="hero-title" class="hero-restaurant__title">Menus faits maison pour vos repas de fête</h1>
+                <p class="hero-restaurant__lead">Julie et José préparent des formules entrée, plat et dessert pour Noël, Pâques ou un repas en famille. Livraison sur Bordeaux.</p>
+                <div class="d-flex flex-column flex-sm-row gap-2 mt-4">
+                    <a href="{{ path('app_menu_index') }}" class="btn btn-vite btn-lg">Voir les menus</a>
+                    <a href="{{ path('app_contact') }}" class="btn btn-outline-light btn-lg">Contact</a>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <aside class="hero-restaurant__card">
+                    <p class="hero-restaurant__card-label">Infos pratiques</p>
+                    <ul class="hero-restaurant__list">
+                        <li>Cuisine sur commande</li>
+                        <li>Allergènes indiqués par plat</li>
+                        <li>Commande en ligne avec compte client</li>
+                    </ul>
+                </aside>
+            </div>
         </div>
-        <div class="col-lg-5">
-            <div class="card border-0 bg-light"><div class="card-body p-4">
-                <h2 class="h4">Julie & José</h2>
-                <p class="mb-0">Une équipe professionnelle, disponible et reconnue pour la qualité de ses prestations.</p>
-            </div></div>
+    </div>
+    <div class="hero-restaurant__fade" aria-hidden="true"></div>
+</section>
+{% endblock %}
+
+{% block body %}
+<section class="mb-5">
+    <h2 class="section-vite__title text-center mb-4">Menus par thème</h2>
+    <div class="row g-3">
+        {% for theme in themes %}
+            <div class="col-6 col-lg-3">
+                <a href="{{ path('app_menu_index') }}?theme={{ theme.id }}" class="theme-tile text-decoration-none">
+                    <span class="theme-tile__label">{{ theme.label }}</span>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="section-vite section-vite--cream mb-5 py-4 px-3 rounded-4">
+    <div class="row align-items-center g-4">
+        <div class="col-lg-6">
+            <h2 class="section-vite__title">Comment on travaille</h2>
+            <p class="mb-3">Les plats sont préparés dans notre labo du Quai des Chartrons. Vous recevez le menu prêt à servir avec les consignes de conservation.</p>
+            <ul class="mb-0">
+                <li>Chaque menu = 1 entrée, 1 plat, 1 dessert</li>
+                <li>Régimes et allergènes visibles sur la fiche menu</li>
+                <li>Livraison incluse sur Bordeaux</li>
+            </ul>
+        </div>
+        <div class="col-lg-6">
+            <img src="{{ asset('uploads/menu-noel-6a563c1f94dc44.05703569.png') }}" class="img-fluid rounded" alt="Exemple de menu traiteur" loading="lazy">
         </div>
     </div>
 </section>
+
+<section class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="section-vite__title mb-0">Menus en ligne</h2>
+        <a href="{{ path('app_menu_index') }}" class="btn btn-outline-vite btn-sm">Tout voir</a>
+    </div>
+    {% if featuredMenus is empty %}
+        <p class="text-muted">Aucun menu publié pour le moment.</p>
+    {% else %}
+        {% include 'menu/_cards.html.twig' with { menus: featuredMenus } %}
+    {% endif %}
+</section>
+
+<section class="mb-5">
+    <h2 class="section-vite__title text-center mb-4">Passer commande</h2>
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="step-card">
+                <span class="step-card__step">1</span>
+                <h3 class="step-card__title">Choisir un menu</h3>
+                <p class="mb-0 small">Sur la page Nos menus.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="step-card">
+                <span class="step-card__step">2</span>
+                <h3 class="step-card__title">Remplir le formulaire</h3>
+                <p class="mb-0 small">Date, adresse, nombre de personnes.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="step-card">
+                <span class="step-card__step">3</span>
+                <h3 class="step-card__title">Livraison</h3>
+                <p class="mb-0 small">On livre, vous servez.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section>
-    <h2 class="h3 fw-bold mb-3">Avis clients validés</h2>
+    <h2 class="section-vite__title text-center mb-4">Avis clients</h2>
     {% if reviews is empty %}
-        <div class="alert alert-info">Aucun avis validé pour le moment.</div>
+        <p class="text-muted text-center">Pas d'avis pour l'instant.</p>
     {% else %}
         <div class="row g-3">
             {% for review in reviews %}
-                <div class="col-md-4"><article class="card h-100 shadow-sm"><div class="card-body">
-                    <div class="mb-2">{% for i in 1..review.rating %}⭐{% endfor %}</div>
-                    <p>{{ review.comment }}</p>
-                    <p class="small text-muted mb-0">{{ review.user.firstName }} {{ review.user.lastName }}</p>
-                </div></article></div>
+                <div class="col-md-6 col-lg-4">
+                    <article class="review-card-restaurant h-100">
+                        <p class="rating-stars mb-2">
+                            {% for i in 1..5 %}{% if i <= review.rating %}★{% else %}☆{% endif %}{% endfor %}
+                        </p>
+                        <p class="review-card-restaurant__quote mb-2">« {{ review.comment }} »</p>
+                        <p class="review-card-restaurant__author mb-0">{{ review.user.firstName }} {{ review.user.lastName|slice(0, 1) }}.</p>
+                    </article>
+                </div>
             {% endfor %}
         </div>
     {% endif %}
+</section>
+{% endblock %}
+
+{% block main_after %}
+<section class="cta-band mt-5">
+    <div class="container text-center py-4">
+        <h2 class="cta-band__title h4">Besoin d'un renseignement ?</h2>
+        <p class="mb-3">Appelez-nous ou utilisez le formulaire de contact.</p>
+        <a href="{{ path('app_contact') }}" class="btn btn-vite">Contact</a>
+    </div>
 </section>
 {% endblock %}

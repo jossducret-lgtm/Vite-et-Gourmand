@@ -1,0 +1,18 @@
+<nav class="sidebar-vite p-3" aria-label="Navigation back-office">
+    <h2 class="h6 text-muted text-uppercase">Back-office</h2>
+    <ul class="nav flex-column gap-1">
+        {% if is_granted('ROLE_ADMIN') %}
+            <li class="nav-item"><a class="nav-link{% if app.request.attributes.get('_route') starts with 'app_admin' %} active{% endif %}" href="{{ path('app_admin_dashboard') }}">Administration</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ path('app_admin_stats') }}">Statistiques</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ path('app_admin_employees') }}">Employés</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ path('app_admin_messages') }}">Messages</a></li>
+        {% endif %}
+        <li class="nav-item"><a class="nav-link{% if app.request.attributes.get('_route') == 'app_employee_dashboard' %} active{% endif %}" href="{{ path('app_employee_dashboard') }}">Tableau de bord</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('app_employee_orders') }}">Commandes</a></li>
+        <li class="nav-item"><a class="nav-link{% if app.request.attributes.get('_route') starts with 'app_employee_theme' %} active{% endif %}" href="{{ path('app_employee_theme_index') }}">Thèmes / événements</a></li>
+        <li class="nav-item"><a class="nav-link{% if app.request.attributes.get('_route') starts with 'app_employee_dish' %} active{% endif %}" href="{{ path('app_employee_dish_index') }}">Plats</a></li>
+        <li class="nav-item"><a class="nav-link{% if app.request.attributes.get('_route') starts with 'app_employee_menu' %} active{% endif %}" href="{{ path('app_employee_menu_index') }}">Menus</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('app_employee_opening_hour_index') }}">Horaires</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('app_employee_reviews') }}">Avis</a></li>
+    </ul>
+</nav>

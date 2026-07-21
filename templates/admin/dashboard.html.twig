@@ -1,0 +1,36 @@
+{% extends 'layouts/backoffice.html.twig' %}
+{% block title %}Administration{% endblock %}
+{% block backoffice_body %}
+<h1 class="page-title mb-1">Administration</h1>
+<p class="text-muted mb-4">Résumé de l'activité.</p>
+<div class="row g-4 mb-4">
+    <div class="col-sm-6 col-lg-4">
+        <a href="{{ path('app_admin_employees') }}" class="text-decoration-none text-body">
+            <div class="card card-vite stat-card h-100"><div class="card-body">
+                <h2 class="h6 text-muted">Employés actifs</h2>
+                <p class="display-6 page-title mb-0">{{ employeesCount }}</p>
+            </div></div>
+        </a>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+        <a href="{{ path('app_admin_messages') }}" class="text-decoration-none text-body">
+            <div class="card card-vite stat-card h-100"><div class="card-body">
+                <h2 class="h6 text-muted">Messages non traités</h2>
+                <p class="display-6 page-title mb-0">{{ pendingMessagesCount }}</p>
+            </div></div>
+        </a>
+    </div>
+    <div class="col-sm-12 col-lg-4">
+        <div class="card card-vite stat-card h-100"><div class="card-body">
+            <h2 class="h6 text-muted">Menu le plus commandé</h2>
+            <p class="h5 mb-0">{% if statsPreview|length > 0 %}{{ statsPreview[0].menuTitle }}{% else %}-{% endif %}</p>
+        </div></div>
+    </div>
+</div>
+<div class="d-flex flex-wrap gap-2">
+    <a href="{{ path('app_admin_stats') }}" class="btn btn-vite">Statistiques MongoDB</a>
+    <a href="{{ path('app_admin_employees') }}" class="btn btn-outline-dark">Gérer les employés</a>
+    <a href="{{ path('app_admin_messages') }}" class="btn btn-outline-dark">Messages contact</a>
+    <a href="{{ path('app_employee_dashboard') }}" class="btn btn-outline-secondary">Espace employé</a>
+</div>
+{% endblock %}

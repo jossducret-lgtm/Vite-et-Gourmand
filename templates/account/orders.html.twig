@@ -1,8 +1,72 @@
 {% extends 'base.html.twig' %}
 {% block title %}Mes commandes{% endblock %}
 {% block body %}
-<div class="d-flex justify-content-between align-items-center mb-4"><h1 class="fw-bold mb-0">Mes commandes</h1><a href="{{ path('app_menu_index') }}" class="btn btn-warning">Commander un menu</a></div>
-{% if orders is empty %}<div class="alert alert-info">Vous n’avez pas encore passé de commande.</div>{% else %}
-<div class="table-responsive bg-white rounded shadow-sm"><table class="table table-hover align-middle mb-0"><thead><tr><th>Numéro</th><th>Menu</th><th>Date prestation</th><th>Statut</th><th>Total</th><th></th></tr></thead><tbody>{% for order in orders %}<tr><td>{{ order.orderNumber }}</td><td>{{ order.menu.title }}</td><td>{{ order.serviceDate|date('d/m/Y') }}</td><td><span class="badge bg-secondary">{{ order.status }}</span></td><td>{{ order.totalPrice|number_format(2, ',', ' ') }} €</td><td class="text-end"><a href="{{ path('app_account_order_show', { id: order.id }) }}" class="btn btn-sm btn-outline-dark">Détail</a></td></tr>{% endfor %}</tbody></table></div>
+{% include 'partials/order_status_labels.html.twig' %}
+<nav aria-label="Fil d'Ariane" class="mb-3">
+    <ol class="breadcrumb small mb-0">
+        <li class="breadcrumb-item"><a href="{{ path('app_account') }}">Mon compte</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Mes commandes</li>
+    </ol>
+</nav>
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <h1 class="page-title mb-0">Mes commandes</h1>
+    <a href="{{ path('app_menu_index') }}" class="btn btn-vite">Commander un menu</a>
+</div>
+
+{% if orders is empty %}
+    <div class="card card-vite text-center p-5">
+        <p class="mb-3">Vous n'avez pas encore passé de commande.</p>
+        <a href="{{ path('app_menu_index') }}" class="btn btn-vite">Découvrir nos menus</a>
+    </div>
+{% else %}
+    <div class="table-responsive card card-vite d-none d-md-block">
+        <table class="table table-vite table-hover mb-0 align-middle">
+            <thead>
+                <tr><th>N° commande</th><th>Menu</th><th>Prestation</th><th>Statut</th><th>Total</th><th></th></tr>
+            </thead>
+            <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td><code>{{ order.orderNumber }}</code></td>
+                    <td>{{ order.menu.title }}</td>
+                    <td>{{ order.serviceDate|date('d/m/Y') }}</td>
+                    <td>
+                        <span class="badge badge-status badge-status--pending">{{ order_status_labels[order.status] ?? order.status }}</span>
+                        {% if order.canReceiveReview and not order.review %}
+                            <span class="badge badge-status badge-status--warning">Avis à donner</span>
+                        {% endif %}
+                    </td>
+                    <td><strong>{{ order.totalPrice|number_format(2, ',', ' ') }} €</strong></td>
+                    <td class="text-end">
+                        <a href="{{ path('app_account_order_show', { id: order.id }) }}" class="btn btn-sm btn-outline-dark">Détail</a>
+                        {% if order.canReceiveReview and not order.review %}
+                            <a href="{{ path('app_review_new', { id: order.id }) }}" class="btn btn-sm btn-vite">Avis</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="d-md-none">
+        {% for order in orders %}
+            <div class="card card-vite mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <strong>{{ order.menu.title }}</strong>
+                        <span class="badge badge-status badge-status--pending">{{ order_status_labels[order.status] ?? order.status }}</span>
+                    </div>
+                    <p class="small text-muted mb-2">{{ order.orderNumber }}, {{ order.serviceDate|date('d/m/Y') }}</p>
+                    <p class="mb-3"><strong>{{ order.totalPrice|number_format(2, ',', ' ') }} €</strong></p>
+                    <div class="d-flex gap-2">
+                        <a href="{{ path('app_account_order_show', { id: order.id }) }}" class="btn btn-sm btn-outline-dark flex-grow-1">Détail</a>
+                        {% if order.canReceiveReview and not order.review %}
+                            <a href="{{ path('app_review_new', { id: order.id }) }}" class="btn btn-sm btn-vite flex-grow-1">Avis</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 {% endif %}
 {% endblock %}

@@ -1,9 +1,90 @@
 {% extends 'base.html.twig' %}
 {% block title %}Contact - Vite & Gourmand{% endblock %}
+{% block main_class %}pb-4 pb-md-5{% endblock %}
+{% block container_class %}container pt-2{% endblock %}
+
+{% block main_before %}
+<header class="page-banner page-banner--contact">
+    <div class="page-banner__overlay"></div>
+    <div class="container page-banner__content">
+        <h1 class="page-banner__title">Contact</h1>
+        <p class="page-banner__lead">Pour un devis ou une question sur une commande. Réponse sous 48 h ouvrées en général.</p>
+    </div>
+</header>
+{% endblock %}
+
 {% block body %}
-<div class="row justify-content-center"><div class="col-lg-7"><div class="card shadow-sm"><div class="card-body p-4">
-    <h1 class="h3">Contactez-nous</h1>
-    <p class="text-muted">Une question sur un menu, une commande ou une prestation ? Envoyez votre demande à Vite & Gourmand.</p>
-    {{ form_start(form) }}{{ form_widget(form) }}<button class="btn btn-warning w-100">Envoyer la demande</button>{{ form_end(form) }}
-</div></div></div></div>
+<div class="row g-4">
+    <div class="col-lg-5">
+        <section class="contact-info h-100">
+            <h2 class="contact-info__title">Vite &amp; Gourmand</h2>
+            <p class="contact-info__intro">12 Quai des Chartrons, 33000 Bordeaux</p>
+
+            <div class="contact-info__block">
+                <p class="contact-info__label">Téléphone</p>
+                <p class="mb-0"><a href="tel:+33601020304">06 01 02 03 04</a></p>
+            </div>
+
+            <div class="contact-info__block">
+                <p class="contact-info__label">Email</p>
+                <p class="mb-0"><a href="mailto:contact@vitegourmand.fr">contact@vitegourmand.fr</a></p>
+            </div>
+
+            <div class="contact-info__block">
+                <p class="contact-info__label">Horaires</p>
+                <ul class="list-unstyled contact-info__hours mb-0">
+                    {% set dayLabels = {'LUNDI':'Lundi','MARDI':'Mardi','MERCREDI':'Mercredi','JEUDI':'Jeudi','VENDREDI':'Vendredi','SAMEDI':'Samedi','DIMANCHE':'Dimanche'} %}
+                    {% for hour in openingHours %}
+                        <li>
+                            <span>{{ dayLabels[hour.dayOfWeek] ?? hour.dayOfWeek }}</span>
+                            {% if hour.isClosed %}
+                                <span class="text-muted">Fermé</span>
+                            {% else %}
+                                <span>{{ hour.openingTime ? hour.openingTime|date('H\\hi') : '-' }} à {{ hour.closingTime ? hour.closingTime|date('H\\hi') : '-' }}</span>
+                            {% endif %}
+                        </li>
+                    {% else %}
+                        <li><span>Lundi à vendredi</span><span>09h00 à 18h00</span></li>
+                        <li><span>Samedi</span><span>09h00 à 13h00</span></li>
+                        <li><span>Dimanche</span><span class="text-muted">Fermé</span></li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="contact-map mt-3">
+                <iframe
+                    title="Carte Bordeaux Chartrons"
+                    src="https://www.openstreetmap.org/export/embed.html?bbox=-0.5728%2C44.8498%2C-0.5628%2C44.8548&amp;layer=mapnik&amp;marker=44.8523%2C-0.5678"
+                    loading="lazy"
+                ></iframe>
+            </div>
+        </section>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="contact-form-card card card-vite">
+            <div class="card-body p-4">
+                <h2 class="h5 page-title mb-3">Envoyer un message</h2>
+                {{ form_start(form) }}
+                    <div class="mb-3">
+                        {{ form_label(form.email) }}
+                        {{ form_widget(form.email, { attr: { class: 'form-control' } }) }}
+                        {{ form_errors(form.email) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_label(form.title) }}
+                        {{ form_widget(form.title, { attr: { class: 'form-control', placeholder: 'Objet du message' } }) }}
+                        {{ form_errors(form.title) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_label(form.message) }}
+                        {{ form_widget(form.message, { attr: { class: 'form-control', rows: 5 } }) }}
+                        {{ form_errors(form.message) }}
+                    </div>
+                    <button class="btn btn-vite">Envoyer</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

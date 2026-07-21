@@ -79,7 +79,7 @@ final class EmployeeController extends AbstractController
 
             $order->setCancellationContactMode($contactMode);
             $order->setCancellationReason($cancellationReason);
-            $order->getMenu()->setStockQuantity($order->getMenu()->getStockQuantity() + 1);
+            $order->getMenu()->setStockQuantity($order->getMenu()->getStockQuantity() + $order->getPeopleCount());
         }
 
         if ($newStatus === 'EN_ATTENTE_RETOUR_MATERIEL') {

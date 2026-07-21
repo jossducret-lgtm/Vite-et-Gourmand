@@ -1,4 +1,59 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_start(form, { attr: { enctype: 'multipart/form-data', class: 'needs-validation' } }) }}
+
+<div class="alert alert-light border mb-4">
+    <strong>Comment créer un menu ?</strong>
+    <ol class="mb-0 small ps-3">
+        <li>Créez les <a href="{{ path('app_employee_theme_index') }}">thèmes / événements</a> (Noël, Mariage...)</li>
+        <li>Créez les <a href="{{ path('app_employee_dish_index') }}">plats</a> (entrée, plat, dessert + allergènes)</li>
+        <li>Renseignez ce formulaire et <strong>sélectionnez les plats</strong> qui composent le menu</li>
+    </ol>
+</div>
+
+<div class="card card-vite mb-4"><div class="card-body">
+    <h2 class="h6 text-muted text-uppercase mb-3">Informations générales</h2>
+    <div class="row g-3">
+        <div class="col-md-8">{{ form_row(form.title) }}</div>
+        <div class="col-md-4">{{ form_row(form.slug) }}</div>
+        <div class="col-12">{{ form_row(form.description) }}</div>
+        <div class="col-12">{{ form_row(form.conditionsText) }}</div>
+        <div class="col-md-6">{{ form_row(form.theme) }}</div>
+        <div class="col-md-6">{{ form_row(form.diet) }}</div>
+    </div>
+</div></div>
+
+<div class="card card-vite mb-4"><div class="card-body">
+    <h2 class="h6 text-muted text-uppercase mb-3">Plats du menu</h2>
+    {{ form_row(form.dish) }}
+</div></div>
+
+<div class="card card-vite mb-4"><div class="card-body">
+    <h2 class="h6 text-muted text-uppercase mb-3">Tarifs & disponibilité</h2>
+    <div class="row g-3">
+        <div class="col-md-4">{{ form_row(form.minPeople) }}</div>
+        <div class="col-md-4">{{ form_row(form.pricePerPerson) }}</div>
+        <div class="col-md-4">{{ form_row(form.stockQuantity) }}</div>
+        <div class="col-12">{{ form_row(form.isActive) }}</div>
+    </div>
+</div></div>
+
+<div class="card card-vite mb-4"><div class="card-body">
+    <h2 class="h6 text-muted text-uppercase mb-3">Galerie photos</h2>
+    {% if menu is defined and menu.images|length > 0 %}
+        <div class="row g-3 mb-3">
+            {% for image in menu.images %}
+                <div class="col-6 col-md-3">
+                    <img src="{{ asset('uploads/' ~ image.filename) }}" alt="{{ image.altText ?: menu.title }}" class="img-fluid rounded border">
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-muted small">Aucune photo pour le moment.</p>
+    {% endif %}
+    {{ form_row(form.galleryFiles) }}
+</div></div>
+
+<div class="d-flex flex-wrap gap-2">
+    <button class="btn btn-vite" type="submit">Enregistrer le menu</button>
+    <a href="{{ path('app_employee_menu_index') }}" class="btn btn-outline-secondary">Retour à la liste</a>
+</div>
 {{ form_end(form) }}

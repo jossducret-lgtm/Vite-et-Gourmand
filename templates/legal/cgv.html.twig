@@ -1,5 +1,25 @@
 {% extends 'base.html.twig' %}
 {% block title %}Conditions générales de vente{% endblock %}
 {% block body %}
-<div class="card shadow-sm"><div class="card-body p-4"><h1>Conditions générales de vente</h1><p>Les commandes doivent respecter les conditions indiquées sur chaque menu.</p><p>En cas de prêt de matériel, le client doit le restituer dans un délai de 10 jours ouvrés. À défaut, des frais de 600 euros peuvent être appliqués.</p><p>Les frais de livraison hors Bordeaux sont calculés avec un forfait de 5 € majoré de 0,59 € par kilomètre.</p></div></div>
+<div class="legal-page">
+    <h1 class="page-title mb-4">Conditions générales de vente</h1>
+    <div class="card card-vite">
+        <div class="card-body p-4 p-md-5">
+            <h2>Commandes</h2>
+            <p>Chaque menu a des conditions (délai, nombre de personnes, conservation). Le client doit les lire avant de valider la commande.</p>
+
+            <h2>Tarifs et livraison</h2>
+            <p>Les prix sont indiqués par personne. La livraison à Bordeaux est incluse. Hors Bordeaux, un forfait de <strong>5 €</strong> majoré de <strong>0,59 €/km</strong> s'applique.</p>
+
+            <h2>Prêt de matériel</h2>
+            <p>En cas de prêt de vaisselle ou matériel de service, le client doit le restituer sous <strong>10 jours ouvrés</strong>. Passé ce délai, des frais de <strong>600 €</strong> pourront être facturés.</p>
+
+            <h2>Annulation</h2>
+            <p>Le client peut annuler une commande tant qu'elle n'a pas été acceptée par Vite &amp; Gourmand. Toute annulation par l'entreprise fera l'objet d'un contact téléphonique ou email avec le client.</p>
+
+            <h2>Données personnelles</h2>
+            <p>Voir notre <a href="{{ path('app_legal_privacy') }}">politique de confidentialité</a>.</p>
+        </div>
+    </div>
+</div>
 {% endblock %}
